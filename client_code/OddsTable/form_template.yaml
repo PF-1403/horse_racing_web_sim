@@ -7,10 +7,11 @@ components:
   name: data_grid_1
   properties:
     columns:
-    - {data_key: column_1, expand: false, id: JKSDUP, title: ID, width: 88}
-    - {data_key: column_2, id: VJQQOR, title: Column 2}
-    - {data_key: column_3, id: OJLQEN, title: Column 3}
-    - {data_key: column_4, id: TYQLIA, title: Column 4}
+    - {data_key: id, expand: false, id: JKSDUP, title: ID, width: 110}
+    - {data_key: horse_name, expand: false, id: VJQQOR, title: Horse Name, width: 157}
+    - {data_key: odds, expand: false, id: OJLQEN, title: Odds, width: 176}
+    - {data_key: stake, expand: false, id: TYQLIA, title: Stake}
+    - {data_key: winnings, id: DCZYKP, title: Potential Winnings}
     show_page_controls: false
   type: DataGrid
 container: {type: ColumnPanel}

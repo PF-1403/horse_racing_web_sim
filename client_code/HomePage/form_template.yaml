@@ -4,6 +4,10 @@ components:
     name: balance_bar_1
     properties: {}
     type: form:BalanceBar
+  - layout_properties: {grid_position: 'SONCBM,VUFUGQ'}
+    name: odds_table_1
+    properties: {}
+    type: form:OddsTable
   layout_properties: {slot: default}
   name: content_panel
   properties: {}

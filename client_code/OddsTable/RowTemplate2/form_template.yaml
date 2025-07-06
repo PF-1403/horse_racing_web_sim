@@ -1,3 +1,25 @@
-components: []
-container: {type: DataRowPanel}
+components:
+- layout_properties: {column: JKSDUP}
+  name: label_id
+  properties: {}
+  type: Label
+- layout_properties: {column: VJQQOR}
+  name: label_horse
+  properties: {}
+  type: Label
+- layout_properties: {column: OJLQEN}
+  name: label_odds
+  properties: {}
+  type: Label
+- layout_properties: {column: TYQLIA}
+  name: label_stake
+  properties: {}
+  type: Label
+- layout_properties: {column: DCZYKP}
+  name: label_winnings
+  properties: {}
+  type: Label
+container:
+  properties: {align: left}
+  type: DataRowPanel
 is_package: true
