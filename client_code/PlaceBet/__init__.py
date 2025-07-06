@@ -1,5 +1,6 @@
 from ._anvil_designer import PlaceBetTemplate
 from anvil import *
+import anvil.server
 
 class PlaceBet(PlaceBetTemplate):
   def __init__(self, **properties):

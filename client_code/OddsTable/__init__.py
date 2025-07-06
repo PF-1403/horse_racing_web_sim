@@ -1,5 +1,6 @@
 from ._anvil_designer import OddsTableTemplate
 from anvil import *
+import anvil.server
 
 class OddsTable(OddsTableTemplate):
   def __init__(self, **properties):

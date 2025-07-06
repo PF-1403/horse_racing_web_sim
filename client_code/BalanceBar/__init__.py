@@ -1,5 +1,6 @@
 from ._anvil_designer import BalanceBarTemplate
 from anvil import *
+import anvil.server
 
 class BalanceBar(BalanceBarTemplate):
   def __init__(self, **properties):

@@ -1,5 +1,6 @@
 from ._anvil_designer import RaceCanvasTemplate
 from anvil import *
+import anvil.server
 import random
 
 class RaceCanvas(RaceCanvasTemplate):
