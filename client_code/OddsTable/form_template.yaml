@@ -1,3 +1,17 @@
-components: []
+components:
+- components:
+  - name: repeating_panel_1
+    properties: {item_template: OddsTable.RowTemplate2}
+    type: RepeatingPanel
+  layout_properties: {grid_position: 'ZNNFFH,RMARLV'}
+  name: data_grid_1
+  properties:
+    columns:
+    - {data_key: column_1, expand: false, id: JKSDUP, title: ID, width: 88}
+    - {data_key: column_2, id: VJQQOR, title: Column 2}
+    - {data_key: column_3, id: OJLQEN, title: Column 3}
+    - {data_key: column_4, id: TYQLIA, title: Column 4}
+    show_page_controls: false
+  type: DataGrid
 container: {type: ColumnPanel}
 is_package: true
