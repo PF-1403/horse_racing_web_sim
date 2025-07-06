@@ -1,0 +1,19 @@
+components:
+- components:
+  - data_bindings: []
+    layout_properties: {col_xs: 0, row: YFQTFD, width_xs: 4}
+    name: lbl_balance
+    properties: {align: right, bold: false, font_size: 20, text: 'Balance (£): '}
+    type: Label
+  - layout_properties: {col_xs: 5, row: YFQTFD, width_xs: 4}
+    name: lbl_races
+    properties: {align: right, bold: false, font_size: 20, text: 'Race Number: '}
+    type: Label
+  layout_properties: {grid_position: 'ABVQEQ,ZQLDJJ'}
+  name: grid_panel_1
+  properties: {}
+  type: GridPanel
+container:
+  properties: {border: ''}
+  type: ColumnPanel
+is_package: true
