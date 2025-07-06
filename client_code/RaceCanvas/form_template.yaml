@@ -1,3 +1,27 @@
-components: []
+components:
+- components:
+  - event_bindings: {}
+    name: canvas_1
+    properties: {height: 100}
+    type: Canvas
+  layout_properties: {grid_position: 'WLNOAD,SOADLU'}
+  name: flow_panel_1
+  properties: {align: center}
+  type: FlowPanel
+- data_bindings: []
+  event_bindings: {click: button_1_click}
+  layout_properties: {grid_position: 'WXPGXK,YVTNKY'}
+  name: button_1
+  properties:
+    spacing:
+      padding: [null, '0', null, '0']
+    text: Start Race
+  type: Button
+- data_bindings: []
+  event_bindings: {tick: timer_1_tick}
+  layout_properties: {grid_position: 'SDHNWN,EMWPKE'}
+  name: timer_1
+  properties: {interval: 0.05}
+  type: Timer
 container: {type: ColumnPanel}
 is_package: true

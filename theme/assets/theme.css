@@ -797,4 +797,11 @@ textarea.anvil-component[disabled] {
 /* Shadow values taken from 
 https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-material-design-elevations
 */
+.role-compact-grid {
+  width: 260px;
+  background-color: #f8f8f8;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
 

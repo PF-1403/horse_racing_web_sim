@@ -8,6 +8,14 @@ components:
     name: odds_table_1
     properties: {}
     type: form:OddsTable
+  - layout_properties: {grid_position: 'TTRNDX,VDHYQD'}
+    name: race_canvas_1
+    properties: {}
+    type: form:RaceCanvas
+  - layout_properties: {grid_position: 'PHHYZI,DPGVOA'}
+    name: place_bet_1
+    properties: {}
+    type: form:PlaceBet
   layout_properties: {slot: default}
   name: content_panel
   properties: {}
