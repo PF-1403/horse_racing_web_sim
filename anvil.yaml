@@ -1,6 +1,6 @@
 allow_embedding: false
-name: Material Design 3
-package_name: Material_Design_3
+name: Main Project
+package_name: Main_Project
 runtime_options:
   client_version: '3'
   server_spec: {base: python310-minimal}
