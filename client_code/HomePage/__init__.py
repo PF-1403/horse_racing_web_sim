@@ -56,5 +56,5 @@ class HomePage(HomePageTemplate):
     self.balance -= bet_amt
     self.update_balance_bar()
     # TODO: update oddsTable
-    self.update_odds_table()
+    #self.update_odds_table()
     Notification(f"Bet placed on horse {comp_id} for £{bet_amt:.2f}", style="success").show()
