@@ -13,7 +13,8 @@ import anvil.server
 #   return 42
 #
 def find_favourite_id(competitors):
-  if not competitors: return None
+  if not competitors: 
+    return None
     # Looks at the list of competitors and finds the horse which has the lowest odds in the list
   try: 
     return min(competitors, key=lambda x: float(x.get('initial_odds', 999)))['id']
@@ -133,3 +134,4 @@ def get_race_spec(config_id="default"):
 
     })
     return spec
+

@@ -21,3 +21,17 @@ class OddsTable(OddsTableTemplate):
       }
       display_rows.append(row)
     self.repeating_panel_1.items = display_rows
+
+  def populate_dynamic_odds(self, odds_dict):
+    for row in self.repeating_panel_1.items:
+      comp_id = row["id"]
+      if comp_id in odds_dict:
+        row["odds"] = odds_dict[comp_id]
+    self.repeating_panel_1.items = self.repeating_panel_1.items
+
+  def get_current_odds(self, comp_id):
+    for row in self.repeating_panel_1.items:
+      if row["id"] == comp_id:
+        return row["odds"]
+    Notification("Unable to select latest dynamic odds from table", style="warning").show()
+    return
