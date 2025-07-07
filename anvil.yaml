@@ -1,4 +1,25 @@
 allow_embedding: false
+db_schema:
+  bets:
+    client: none
+    columns:
+    - admin_ui: {order: 1, width: 200}
+      name: comp_id
+      type: number
+    - admin_ui: {order: 2, width: 200}
+      name: stake
+      type: number
+    - admin_ui: {order: 3, width: 200}
+      name: odds
+      type: number
+    - admin_ui: {order: 4, width: 200}
+      name: potential_winnings
+      type: number
+    - admin_ui: {order: 0, width: 200}
+      name: timestamp
+      type: number
+    server: full
+    title: bets
 name: Main Project
 package_name: Main_Project
 runtime_options:

@@ -1,5 +1,8 @@
 from ._anvil_designer import HomePageTemplate
 from anvil import *
+import anvil.tables as tables
+import anvil.tables.query as q
+from anvil.tables import app_tables
 import anvil.server
 import random
 
@@ -24,6 +27,7 @@ class HomePage(HomePageTemplate):
     self.load_next_race()
 
   def load_next_race(self):
+    anvil.server.call('clear_bets_table')
     race_id = self.race_ids[self.race_index]
     self.race_spec = anvil.server.call('get_race_spec',race_id)
     print(f'Race Loaded! \nRace number {self.race_index+1}/{len(self.race_ids)}')
@@ -38,12 +42,8 @@ class HomePage(HomePageTemplate):
     self.balance_bar_1.update_info(balance=self.balance, race_number=self.race_index + 1, total_races=len(self.race_ids))
 
   def update_stakes(self):
-    print("Updating stakes")
     stake, winnings = anvil.server.call('sum_logs')
-    print(f'Stakes picked up: {stake} \nWinnings picked up: {winnings}')
-    print("Populating odds table!")
     self.odds_table_1.update_stakes(stake, winnings)
-
   
   def calculate_dynamic_odds(self, competitors, positions):
     leader_position = max(positions.values())
@@ -87,7 +87,7 @@ class HomePage(HomePageTemplate):
       return
 
     if not self.race_active:
-      static_odds = self.race_spec['competitors'][comp_id]['initial_odds']
+      static_odds = next((c["initial_odds"] for c in self.race_spec["competitors"] if c["id"] == comp_id), None)
       self.balance, bet_log = anvil.server.call('place_bet', comp_id, bet_amt, static_odds, self.balance)
       print("Successfully placed static bet")
     else:

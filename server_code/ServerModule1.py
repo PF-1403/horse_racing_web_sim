@@ -1,3 +1,6 @@
+import anvil.tables as tables
+import anvil.tables.query as q
+from anvil.tables import app_tables
 import anvil.server
 from datetime import datetime
 from collections import defaultdict
@@ -134,7 +137,6 @@ def get_race_spec(config_id="default"):
 
 @anvil.server.callable
 def place_bet(competitor_id, stake, odds, balance):
-  print(f"[place_bet] server_id = {uuid.getnode()}")
   winnings = (stake * odds) - stake
   balance -= stake
   timestamp = datetime.utcnow().timestamp()
@@ -144,27 +146,34 @@ def place_bet(competitor_id, stake, odds, balance):
     "comp_id": competitor_id,
     "stake": stake,
     "odds": odds,
-    "potent_winnings": round(winnings, 2)
+    "potential_winnings": round(winnings, 2)
   }
-  bet_log[timestamp] = log_entry
-  print(f"[place_bet] Added log: {log_entry}")
+  app_tables.bets.add_row(
+    timestamp=timestamp,
+    comp_id=competitor_id,
+    stake=stake,
+    odds=odds,
+    potential_winnings=round(winnings, 2)
+  )
 
   return balance, log_entry
 
 @anvil.server.callable
 def sum_logs():
-  print(f"[place_bet] server_id = {uuid.getnode()}")
   total_stakes = defaultdict(float)
   total_winnings = defaultdict(float)
-  print("Getting logs...")
+  print("Getting logs from the data table...")
   
-  for log in bet_log.values():
-    print(f'Got first log: {log}')
-    comp_id = log["comp_id"]
-    stake = log["stake"]
-    winnings = log["potent_winnings"]
+  for row in app_tables.bets.search():
+    comp_id = str(row["comp_id"])
+    stake = row["stake"]
+    winnings = row["potential_winnings"]
     total_stakes[comp_id] += stake
     total_winnings[comp_id] += winnings
 
-  print(total_stakes)
-  return total_stakes, total_winnings
+  return dict(total_stakes), dict(total_winnings)
+
+@anvil.server.callable
+def clear_bets_table():
+  for row in app_tables.bets.search():
+    row.delete()

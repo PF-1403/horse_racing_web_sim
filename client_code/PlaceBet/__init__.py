@@ -1,5 +1,8 @@
 from ._anvil_designer import PlaceBetTemplate
 from anvil import *
+import anvil.tables as tables
+import anvil.tables.query as q
+from anvil.tables import app_tables
 import anvil.server
 
 class PlaceBet(PlaceBetTemplate):
@@ -35,5 +38,10 @@ class PlaceBet(PlaceBetTemplate):
       Notification("Please enter a positive bet amount.", style="warning").show()
       return
 
-    self.raise_event("x-place-bet", comp_id=comp_id, bet_amt=round(bet_amt,2))   
+    self.raise_event("x-place-bet", comp_id=comp_id, bet_amt=round(bet_amt,2)) 
+    self.clear_vals()
+
+  def clear_vals(self):
+    self.competitor_text.text = ""
+    self.bet_text.text = ""
     
