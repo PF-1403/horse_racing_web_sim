@@ -89,12 +89,13 @@ class HomePage(HomePageTemplate):
     if not self.race_active:
       static_odds = next((c["initial_odds"] for c in self.race_spec["competitors"] if c["id"] == comp_id), None)
       self.balance, bet_log = anvil.server.call('place_bet', comp_id, bet_amt, static_odds, self.balance)
+      Notification(f"Bet placed on horse {comp_id} for £{bet_amt:.2f} at odds of {static_odds:.2f}", style="success").show()
       print("Successfully placed static bet")
     else:
       dynamic_odds = self.odds_table_1.get_current_odds(comp_id)
       self.balance, bet_log = anvil.server.call('place_bet', comp_id, bet_amt, dynamic_odds, self.balance)
+      Notification(f"Bet placed on horse {comp_id} for £{bet_amt:.2f} at odds of {dynamic_odds:.2f}", style="success").show()
       print("Successfully placed dynamic bet")
 
     self.update_stakes()
     self.update_balance_bar()
-    Notification(f"Bet placed on horse {comp_id} for £{bet_amt:.2f}", style="success").show()
