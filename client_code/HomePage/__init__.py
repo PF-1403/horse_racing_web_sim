@@ -7,9 +7,8 @@ class HomePage(HomePageTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-
+    self.initialise_app()
     # Any code you write here will run before the form opens.
-    self.balance_bar_1.update_info(balance=200.0, race_number=3, total_races=7)
 
   def initialise_app(self):
     self.balance = 1000.0
@@ -23,4 +22,11 @@ class HomePage(HomePageTemplate):
 
   def load_next_race(self):
     race_id = self.race_ids[self.race_index]
-    
+    self.race_spec = anvil.server.call('get_race_spec',race_id)
+    print(f'Race Loaded! \nRace number {self.race_index+1}/{len(self.race_ids)}')
+    print(f'Race spec: {self.race_spec["config_id"]}')
+
+    #TODO: Create this race_spec function
+    #self.race_canvas_1.load_race_spec(self.race_spec)
+    self.odds_table_1.populate_static_odds(self.race_spec['competitors'])
+    self.balance_bar_1.update_info(balance=self.balance, race_number=self.race_index+1, total_races=len(self.race_ids))
