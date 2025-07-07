@@ -48,7 +48,13 @@ class HomePage(HomePageTemplate):
       Notification("Invalid competitor ID entered!", style="warning").show()
       return
 
+    # TODO: Place bet here- call server function based upon odds
+    # if static odds, place bet directly, if dynamic then do 'calculate_odds'
+
+    
     # Make balance changes
     self.balance -= bet_amt
     self.update_balance_bar()
+    # TODO: update oddsTable
+    self.update_odds_table()
     Notification(f"Bet placed on horse {comp_id} for £{bet_amt:.2f}", style="success").show()
