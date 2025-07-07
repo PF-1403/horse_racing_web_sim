@@ -35,3 +35,17 @@ class OddsTable(OddsTableTemplate):
         return row["odds"]
     Notification("Unable to select latest dynamic odds from table", style="warning").show()
     return
+
+  def update_stakes(self, stakes, winnings):
+    print("Looping through stakes")
+    for id, amount in stakes.items():
+      for row in self.repeating_panel_1.items:
+        comp_id_row = row["id"]
+        if comp_id_row == id:
+          row["stake"] = amount
+
+    for id, winning in winnings.items():
+      for row in self.repeating_panel_1.items:
+        comp_id_row = row["id"]
+        if comp_id_row == id:
+          row["potential_winnings"] = winning

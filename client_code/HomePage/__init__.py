@@ -37,6 +37,14 @@ class HomePage(HomePageTemplate):
   def update_balance_bar(self):
     self.balance_bar_1.update_info(balance=self.balance, race_number=self.race_index + 1, total_races=len(self.race_ids))
 
+  def update_stakes(self):
+    print("Updating stakes")
+    stake, winnings = anvil.server.call('sum_logs')
+    print(f'Stakes picked up: {stake} \nWinnings picked up: {winnings}')
+    print("Populating odds table!")
+    self.odds_table_1.update_stakes(stake, winnings)
+
+  
   def calculate_dynamic_odds(self, competitors, positions):
     leader_position = max(positions.values())
     leader_progress = leader_position / self.finish_line
@@ -78,19 +86,15 @@ class HomePage(HomePageTemplate):
       Notification("Invalid competitor ID entered!", style="warning").show()
       return
 
-    # TODO: Place bet here- call server function based upon odds
-    # if static odds, place bet directly, if dynamic then do 'calculate_odds'
     if not self.race_active:
-      # placeBet(comp_id, amt, static_odds)
-      None
+      static_odds = self.race_spec['competitors'][comp_id]['initial_odds']
+      self.balance, bet_log = anvil.server.call('place_bet', comp_id, bet_amt, static_odds, self.balance)
+      print("Successfully placed static bet")
     else:
-      #dynamic_odds = self.odds_table_1.get_current_odds(comp_id)
-      # placeBet(comp_id, bet_amt, odds)
-      None
-    
-    # Make balance changes
-    self.balance -= bet_amt
+      dynamic_odds = self.odds_table_1.get_current_odds(comp_id)
+      self.balance, bet_log = anvil.server.call('place_bet', comp_id, bet_amt, dynamic_odds, self.balance)
+      print("Successfully placed dynamic bet")
+
+    self.update_stakes()
     self.update_balance_bar()
-    # TODO: update oddsTable
-    #self.update_odds_table()
     Notification(f"Bet placed on horse {comp_id} for £{bet_amt:.2f}", style="success").show()

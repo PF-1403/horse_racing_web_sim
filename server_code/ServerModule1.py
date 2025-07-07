@@ -1,17 +1,14 @@
 import anvil.server
-
+from datetime import datetime
+from collections import defaultdict
+import uuid
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
 #
 # To allow anvil.server.call() to call functions here, we mark
 # them with @anvil.server.callable.
-# Here is an example - you can replace it with your own:
-#
-# @anvil.server.callable
-# def say_hello(name):
-#   print("Hello, " + name + "!")
-#   return 42
-#
+bet_log = {}
+
 def find_favourite_id(competitors):
   if not competitors: 
     return None
@@ -135,3 +132,39 @@ def get_race_spec(config_id="default"):
     })
     return spec
 
+@anvil.server.callable
+def place_bet(competitor_id, stake, odds, balance):
+  print(f"[place_bet] server_id = {uuid.getnode()}")
+  winnings = (stake * odds) - stake
+  balance -= stake
+  timestamp = datetime.utcnow().timestamp()
+
+  log_entry = {
+    "timestamp": timestamp,
+    "comp_id": competitor_id,
+    "stake": stake,
+    "odds": odds,
+    "potent_winnings": round(winnings, 2)
+  }
+  bet_log[timestamp] = log_entry
+  print(f"[place_bet] Added log: {log_entry}")
+
+  return balance, log_entry
+
+@anvil.server.callable
+def sum_logs():
+  print(f"[place_bet] server_id = {uuid.getnode()}")
+  total_stakes = defaultdict(float)
+  total_winnings = defaultdict(float)
+  print("Getting logs...")
+  
+  for log in bet_log.values():
+    print(f'Got first log: {log}')
+    comp_id = log["comp_id"]
+    stake = log["stake"]
+    winnings = log["potent_winnings"]
+    total_stakes[comp_id] += stake
+    total_winnings[comp_id] += winnings
+
+  print(total_stakes)
+  return total_stakes, total_winnings
