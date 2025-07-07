@@ -8,7 +8,8 @@ components:
     name: competitor_label
     properties: {align: right, bold: true, font_size: 12, text: 'Competitor ID: '}
     type: Label
-  - layout_properties: {col_xs: 6, row: UWULDT, width_xs: 2}
+  - event_bindings: {pressed_enter: competitor_text_pressed_enter}
+    layout_properties: {col_xs: 6, row: UWULDT, width_xs: 2}
     name: competitor_text
     properties: {font_size: 12}
     type: TextBox
@@ -16,11 +17,13 @@ components:
     name: bet_label
     properties: {align: right, bold: true, font_size: 12, text: 'Bet Amount (£):'}
     type: Label
-  - layout_properties: {col_xs: 6, row: JEXLCQ, width_xs: 2}
+  - event_bindings: {pressed_enter: bet_text_pressed_enter}
+    layout_properties: {col_xs: 6, row: JEXLCQ, width_xs: 2}
     name: bet_text
     properties: {font_size: 12}
     type: TextBox
-  - layout_properties: {col_xs: 5, row: DWZAVH, width_xs: 3}
+  - event_bindings: {click: bet_button_click}
+    layout_properties: {col_xs: 5, row: DWZAVH, width_xs: 3}
     name: bet_button
     properties: {align: right, font_size: 12, text: Place Bet}
     type: Button
