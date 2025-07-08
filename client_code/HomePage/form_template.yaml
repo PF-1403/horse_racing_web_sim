@@ -31,7 +31,7 @@ components:
 - event_bindings: {tick: race_timer_tick}
   layout_properties: {slot: top-left-btn}
   name: race_timer
-  properties: {interval: 0.05}
+  properties: {interval: 0.1}
   type: Timer
 container:
   properties: {html: '@theme:standard-page.html'}

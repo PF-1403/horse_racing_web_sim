@@ -48,13 +48,13 @@ class HomePage(HomePageTemplate):
     self.odds_table_1.update_stakes(stake, winnings)
   
   def calculate_dynamic_odds(self, competitors, positions):
-    leader_position = max(horse['y'] for horse in positions)
+    leader_position = max(horse['x'] for horse in positions)
     leader_progress = float(leader_position) / float(self.finish_line)
     odds = {}
 
     for comp in competitors:
       # Calculate relative positions
-      current_position = next((value['y'] for value in positions if value['id'] == comp), None)
+      current_position = next((value['x'] for value in positions if value['id'] == comp['id']), None)
       progress = float(current_position) / float(self.finish_line)
       relative_progress = progress / leader_progress
 
@@ -109,16 +109,19 @@ class HomePage(HomePageTemplate):
     self.race_started = True 
     self.race_timer.enabled = True
     
-  
   def race_timer_tick(self, **event_args):
     if not self.race_started:
       return
 
+    race_won = False
     race_ongoing = False
     for horse in self.horse_location:
       if horse['x'] < self.finish_line:
         horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
         race_ongoing = True
+      elif horse['x'] == self.finish_line and not race_won:
+        race_winner = horse['id']
+        race_won = True
     self.race_canvas_1.draw_canvas(self.horse_location)
     
     ## Now populate dynamic odds here ##
@@ -127,5 +130,23 @@ class HomePage(HomePageTemplate):
     if not race_ongoing:
       self.race_timer.enabled = False
       self.race_started = False
+      self.race_complete(race_winner)
 
+  def calc_and_disp_results(self, race_winner):
+    pass
 
+  def log_results(self):
+    pass
+
+  def race_complete(self, race_winner):
+    self.calc_and_disp_results(race_winner)
+    self.log_results()
+  
+    # Add 1 to race index and decide on logic
+    self.race_index += 1
+    if self.race_index > len(self.race_ids):
+      # Notification
+      # move to final form
+      pass
+    else:
+      self.load_next_race()
