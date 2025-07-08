@@ -118,10 +118,11 @@ class HomePage(HomePageTemplate):
     for horse in self.horse_location:
       if horse['x'] < self.finish_line:
         horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
+        if horse['x'] == self.finish_line:
+          race_winner = horse['id']
+          race_won = True
         race_ongoing = True
-      elif horse['x'] == self.finish_line and not race_won:
-        race_winner = horse['id']
-        race_won = True
+
     self.race_canvas_1.draw_canvas(self.horse_location)
     
     ## Now populate dynamic odds here ##
