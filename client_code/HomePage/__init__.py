@@ -133,20 +133,38 @@ class HomePage(HomePageTemplate):
       self.race_complete(race_winner)
 
   def calc_and_disp_results(self, race_winner):
-    pass
+    stake, winnings = anvil.server.call('sum_logs')
+    print(f'Race winner: {race_winner}')
+    lost_stake = 0
+    total_winnings = 0
+    
+    for id, amount in stake.items():
+      if int(id) != int(race_winner):
+        lost_stake += float(amount)
+        
+    for id, value in winnings.items():
+      if int(id) == int(race_winner):
+        total_winnings = float(value)
+
+    print(f'Amount lost betting on losers: £{amount:.2f}')
+    print(f'Amount won betting on winners: £{total_winnings:.2f}')
+    print(f'Adding winnings to balance... \nCurrent balance: £{self.balance:.2f}')
+    if total_winnings > 0:
+      self.balance += total_winnings
+    print(f'New balance: £{self.balance:.2f}')
 
   def log_results(self):
     pass
 
   def race_complete(self, race_winner):
     self.calc_and_disp_results(race_winner)
-    self.log_results()
+    #self.log_results()
   
     # Add 1 to race index and decide on logic
-    self.race_index += 1
-    if self.race_index > len(self.race_ids):
-      # Notification
-      # move to final form
-      pass
-    else:
-      self.load_next_race()
+    # self.race_index += 1
+    # if self.race_index > len(self.race_ids):
+    #   # Notification
+    #   # move to final form
+    #   pass
+    # else:
+    #   self.load_next_race()

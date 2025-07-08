@@ -40,6 +40,7 @@ class PlaceBet(PlaceBetTemplate):
 
     self.raise_event("x-place-bet", comp_id=comp_id, bet_amt=round(bet_amt,2)) 
     self.clear_vals()
+    self.competitor_text.focus()
 
   def clear_vals(self):
     self.competitor_text.text = ""
