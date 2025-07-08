@@ -11,8 +11,10 @@ class HomePage(HomePageTemplate):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
     self.initialise_app()
+    self.race_started = False
     # Any code you write here will run before the form opens.
     self.place_bet_1.set_event_handler("x-place-bet", self.handle_place_bet)
+    self.race_canvas_1.set_event_handler("x-start-race", self.start_race)
 
   def initialise_app(self):
     self.balance = 1000.0
@@ -46,14 +48,14 @@ class HomePage(HomePageTemplate):
     self.odds_table_1.update_stakes(stake, winnings)
   
   def calculate_dynamic_odds(self, competitors, positions):
-    leader_position = max(positions.values())
-    leader_progress = leader_position / self.finish_line
+    leader_position = max(horse['y'] for horse in positions)
+    leader_progress = float(leader_position) / float(self.finish_line)
     odds = {}
 
     for comp in competitors:
       # Calculate relative positions
-      current_position = positions.get(comp["id"], 0)
-      progress = current_position / self.finish_line
+      current_position = next((value['y'] for value in positions if value['id'] == comp), None)
+      progress = float(current_position) / float(self.finish_line)
       relative_progress = progress / leader_progress
 
       # Do adaptions based upon closeness
@@ -99,3 +101,31 @@ class HomePage(HomePageTemplate):
 
     self.update_stakes()
     self.update_balance_bar()
+
+  def start_race(self, **event_args):
+    # Establish initial horse location, show race started
+    self.horse_location = event_args['horses']
+    self.finish_line = event_args['finish_line']
+    self.race_started = True 
+    self.race_timer.enabled = True
+    
+  
+  def race_timer_tick(self, **event_args):
+    if not self.race_started:
+      return
+
+    race_ongoing = False
+    for horse in self.horse_location:
+      if horse['x'] < self.finish_line:
+        horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
+        race_ongoing = True
+    self.race_canvas_1.draw_canvas(self.horse_location)
+    
+    ## Now populate dynamic odds here ##
+    self.calculate_dynamic_odds(self.race_spec['competitors'], self.horse_location)
+
+    if not race_ongoing:
+      self.race_timer.enabled = False
+      self.race_started = False
+
+

@@ -27,7 +27,7 @@ class RaceCanvas(RaceCanvasTemplate):
     available_space = self.canvas_1.height - (self.num_horses * self.horse_height)
     self.horse_gap = available_space // (self.num_horses + 1)
     # Initial horse positions
-    self.horses = [{'x': 16, 'y':self.horse_gap + self.horse_radius + i * (self.horse_gap + self.horse_height)} for i in range(self.num_horses)]
+    self.horses = [{'id': i + 1,'x': 16, 'y': self.horse_gap + self.horse_radius + i * (self.horse_gap + self.horse_height)} for i in range(self.num_horses)]
 
     # Set up horse images
     self.horse_images = [
@@ -37,12 +37,11 @@ class RaceCanvas(RaceCanvasTemplate):
       URLMedia('_/theme/yellow_horse.png')
     ]
 
-
   def form_show(self, **event_args):
-  # Safe place to draw after layout is ready
-    self.draw_canvas()
+    # Safe place to draw after layout is ready
+    self.draw_canvas(self.horses)
 
-  def draw_canvas(self):
+  def draw_canvas(self, horse_loc):
     canvas_width = self.canvas_1.get_width()
     canvas_height = self.canvas_1.get_height()
 
@@ -61,8 +60,16 @@ class RaceCanvas(RaceCanvasTemplate):
     self.canvas_1.line_to(self.finish_line + 0.5, canvas_height)
     self.canvas_1.stroke()
 
+    # Draw start line
+    self.start_line = 2 * self.horse_radius
+    self.canvas_1.begin_path()
+    self.canvas_1.stroke_style = "black"
+    self.canvas_1.move_to(self.start_line + 0.5, 0)
+    self.canvas_1.line_to(self.start_line + 0.5, canvas_height)
+    self.canvas_1.stroke()
+
     # Draw horses
-    for horse in self.horses:
+    for horse in horse_loc:
       index = self.horses.index(horse)
       img_url = self.horse_images[index]
 
@@ -73,25 +80,6 @@ class RaceCanvas(RaceCanvasTemplate):
                               self.horse_radius * 2)
 
   def button_1_click(self, **event_args):
-    # Reset horse positions
-    self.horses = [{'x': 16, 'y':self.horse_gap + self.horse_radius + i * (self.horse_gap + self.horse_height)} for i in range(self.num_horses)]
-    self.race_started = True
-    self.timer_1.enabled = True
-    self.draw_canvas()
-
-  def timer_1_tick(self, **event_args):
-    if not self.race_started:
-      return
-
-    race_ongoing = False
-    for horse in self.horses:
-      if horse['x'] < self.finish_line:
-        horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
-      if horse['x'] < self.finish_line:
-        race_ongoing = True
-
-    self.draw_canvas()
-
-    if not race_ongoing:
-      self.timer_1.enabled = False
-      self.race_started = False
+    # Disable button and raise event to start the race
+    self.button_1.enabled = False
+    self.raise_event("x-start-race", horses=self.horses, finish_line = self.finish_line)

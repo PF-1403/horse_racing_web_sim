@@ -23,5 +23,7 @@ components:
   name: timer_1
   properties: {interval: 0.05}
   type: Timer
-container: {type: ColumnPanel}
+container:
+  event_bindings: {show: form_show}
+  type: ColumnPanel
 is_package: true
