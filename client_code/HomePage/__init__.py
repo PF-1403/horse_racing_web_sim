@@ -20,10 +20,10 @@ class HomePage(HomePageTemplate):
     self.balance = 1000.0
     self.race_index = 0
     self.finish_line = 100
-    self.race_active = False
+    self.race_started = False
+    self.race_winner = None
     self.race_ids = ["race1", "race2", "race3", "race4", "race5", "race6", "race7"]
     random.shuffle(self.race_ids)
-    self.bets = []
     print("Initialisation of app is complete!")
 
     self.load_next_race()
@@ -37,6 +37,7 @@ class HomePage(HomePageTemplate):
 
     #TODO: Create this race_spec function
     #self.race_canvas_1.load_race_spec(self.race_spec)
+    self.race_canvas_1.reset_button()
     self.odds_table_1.populate_static_odds(self.race_spec['competitors'])
     self.balance_bar_1.update_info(balance=self.balance, race_number=self.race_index+1, total_races=len(self.race_ids))
 
@@ -88,7 +89,7 @@ class HomePage(HomePageTemplate):
       Notification("Invalid competitor ID entered!", style="warning").show()
       return
 
-    if not self.race_active:
+    if not self.race_started:
       static_odds = next((c["initial_odds"] for c in self.race_spec["competitors"] if c["id"] == comp_id), None)
       self.balance, bet_log = anvil.server.call('place_bet', comp_id, bet_amt, static_odds, self.balance)
       Notification(f"Bet placed on horse {comp_id} for £{bet_amt:.2f} at odds of {static_odds:.2f}", style="success").show()
@@ -113,16 +114,19 @@ class HomePage(HomePageTemplate):
     if not self.race_started:
       return
 
-    race_won = False
     race_ongoing = False
     for horse in self.horse_location:
       if horse['x'] < self.finish_line:
         horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
-        if horse['x'] == self.finish_line:
-          race_winner = horse['id']
-          race_won = True
         race_ongoing = True
 
+    # Check for race winner
+    if self.race_winner is None:
+      for horse in self.horse_location:
+          if (horse['x'] == self.finish_line):
+            self.race_winner = horse['id']
+            break
+          
     self.race_canvas_1.draw_canvas(self.horse_location)
     
     ## Now populate dynamic odds here ##
@@ -131,41 +135,72 @@ class HomePage(HomePageTemplate):
     if not race_ongoing:
       self.race_timer.enabled = False
       self.race_started = False
-      self.race_complete(race_winner)
+      self.race_complete()
 
-  def calc_and_disp_results(self, race_winner):
+  def calc_and_disp_results(self):
     stake, winnings = anvil.server.call('sum_logs')
-    print(f'Race winner: {race_winner}')
+    print(f'Race winner: {self.race_winner}')
     lost_stake = 0
     total_winnings = 0
     
     for id, amount in stake.items():
-      if int(id) != int(race_winner):
+      if int(id) != int(self.race_winner):
         lost_stake += float(amount)
         
     for id, value in winnings.items():
-      if int(id) == int(race_winner):
+      if int(id) == int(self.race_winner):
         total_winnings = float(value)
 
-    print(f'Amount lost betting on losers: £{amount:.2f}')
-    print(f'Amount won betting on winners: £{total_winnings:.2f}')
-    print(f'Adding winnings to balance... \nCurrent balance: £{self.balance:.2f}')
     if total_winnings > 0:
       self.balance += total_winnings
-    print(f'New balance: £{self.balance:.2f}')
+      self.update_balance_bar()
+
+    self.race_index += 1
+    if self.race_index == len(self.race_ids):
+      self.display_results_end(lost_stake, total_winnings)
+    else:
+      self.display_results_next_race(lost_stake, total_winnings)
+    
+  def display_results_next_race(self, stake, winnings):
+    next_race = alert(
+      title=f'Race Complete - Horse {self.race_winner} Won!',
+      content=(
+        f"Stakes lost on losers:                     £{stake:.2f}\n"
+        f"Amount won on winners:               £{winnings:.2f}\n"
+        f"\n"
+        f"New balance:                                   £{self.balance:.2f}"
+      ),
+      buttons=[("Next Race", True)],
+      dismissible=False,
+      large=True
+    )
+  
+    if next_race:
+      self.race_winner = None
+      self.race_canvas_1.reset_canvas()
+      self.load_next_race()
+      
+
+  def display_results_end(self, stake, winnings):
+    end_page = alert(
+      title=f'Final Race Complete - Horse {self.race_winner} Won! \nThanks For Participating!',
+      content=(
+        f"Stakes lost on losers:                     £{stake:.2f}\n"
+        f"Amount won on winners:               £{winnings:.2f}\n"
+        f"\n"
+        f"New balance:                                   £{self.balance:.2f}"
+      ),
+      buttons=[("Complete", True)],
+      dismissible=False,
+      large=True
+    )
+
+    if end_page:
+      open_form('EndForm')
 
   def log_results(self):
     pass
 
-  def race_complete(self, race_winner):
-    self.calc_and_disp_results(race_winner)
-    #self.log_results()
-  
-    # Add 1 to race index and decide on logic
-    # self.race_index += 1
-    # if self.race_index > len(self.race_ids):
-    #   # Notification
-    #   # move to final form
-    #   pass
-    # else:
-    #   self.load_next_race()
+  def race_complete(self):
+    # self.log_data()
+    self.calc_and_disp_results()

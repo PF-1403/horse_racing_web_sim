@@ -21,13 +21,12 @@ class RaceCanvas(RaceCanvasTemplate):
   
     self.horse_radius = 16
     self.num_horses = 4
-    self.race_started = False
 
-    self.horse_height = self.horse_radius * 2
-    available_space = self.canvas_1.height - (self.num_horses * self.horse_height)
-    self.horse_gap = available_space // (self.num_horses + 1)
+
+    self.add_number = 24
+    self.lane_size = 80
     # Initial horse positions
-    self.horses = [{'id': i + 1,'x': 16, 'y': self.horse_gap + self.horse_radius + i * (self.horse_gap + self.horse_height)} for i in range(self.num_horses)]
+    self.horses = [{'id': i + 1,'x': 16, 'y': self.horse_radius + self.add_number + (i * self.lane_size)} for i in range(self.num_horses)]
 
     # Set up horse images
     self.horse_images = [
@@ -68,6 +67,15 @@ class RaceCanvas(RaceCanvasTemplate):
     self.canvas_1.line_to(self.start_line + 0.5, canvas_height)
     self.canvas_1.stroke()
 
+    # Draw lanes
+    lanes = [80, 160, 240]
+    for lane in lanes:
+      self.canvas_1.begin_path()
+      self.canvas_1.stroke_style = "black"
+      self.canvas_1.move_to(0, lane + 0.5)
+      self.canvas_1.line_to(canvas_width, lane + 0.5)
+      self.canvas_1.stroke()      
+    
     # Draw horses
     for horse in horse_loc:
       index = self.horses.index(horse)
@@ -83,3 +91,10 @@ class RaceCanvas(RaceCanvasTemplate):
     # Disable button and raise event to start the race
     self.button_1.enabled = False
     self.raise_event("x-start-race", horses=self.horses, finish_line = self.finish_line)
+
+  def reset_button(self):
+    self.button_1.enabled = True
+
+  def reset_canvas(self):
+    self.horses = [{'id': i + 1,'x': 16, 'y': self.horse_radius + self.add_number + (i * self.lane_size)} for i in range(self.num_horses)]
+    self.draw_canvas(self.horses)
