@@ -12,21 +12,22 @@ class RaceCanvas(RaceCanvasTemplate):
     self.init_components(**properties)
     
     self.button_1.background = "#8adbdb"
-  
-    # Any code you write here will run before the form opens.
-    self.horse_radius = 10
-    self.horse_gap = 60
-    self.num_horses = 4
-    self.race_started = False
-
-    # Initial horse positions
-    self.horses = [{'x': 10, 'y': 50 + i * self.horse_gap} for i in range(self.num_horses)]
 
     # Set canvas size and force visual centering
     self.canvas_1.width = 800
-    self.canvas_1.height = 300
+    self.canvas_1.height = 320
     self.canvas_1.spacing_above = "none"
     self.canvas_1.spacing_below = "none"
+  
+    self.horse_radius = 16
+    self.num_horses = 4
+    self.race_started = False
+
+    self.horse_height = self.horse_radius * 2
+    available_space = self.canvas_1.height - (self.num_horses * self.horse_height)
+    self.horse_gap = available_space // (self.num_horses + 1)
+    # Initial horse positions
+    self.horses = [{'x': 16, 'y':self.horse_gap + self.horse_radius + i * (self.horse_gap + self.horse_height)} for i in range(self.num_horses)]
 
     # Set up horse images
     self.horse_images = [
@@ -73,7 +74,7 @@ class RaceCanvas(RaceCanvasTemplate):
 
   def button_1_click(self, **event_args):
     # Reset horse positions
-    self.horses = [{'x': 10, 'y': 50 + i * self.horse_gap} for i in range(self.num_horses)]
+    self.horses = [{'x': 16, 'y':self.horse_gap + self.horse_radius + i * (self.horse_gap + self.horse_height)} for i in range(self.num_horses)]
     self.race_started = True
     self.timer_1.enabled = True
     self.draw_canvas()
