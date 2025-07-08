@@ -41,7 +41,6 @@ class RaceCanvas(RaceCanvasTemplate):
       return  # Wait until canvas is rendered
 
     # Clear canvas
-    self.canvas_1.begin_path()
     self.canvas_1.fill_style = "white"
     self.canvas_1.fill_rect(0, 0, canvas_width, canvas_height)
 
