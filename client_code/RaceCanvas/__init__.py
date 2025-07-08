@@ -12,8 +12,7 @@ class RaceCanvas(RaceCanvasTemplate):
     self.init_components(**properties)
     
     self.button_1.background = "#8adbdb"
-    
-    
+  
     # Any code you write here will run before the form opens.
     self.horse_radius = 10
     self.horse_gap = 60
@@ -28,6 +27,15 @@ class RaceCanvas(RaceCanvasTemplate):
     self.canvas_1.height = 300
     self.canvas_1.spacing_above = "none"
     self.canvas_1.spacing_below = "none"
+
+    # Set up horse images
+    self.horse_images = [
+      URLMedia('_/theme/blue_horse.png'),
+      URLMedia('_/theme/green_horse.png'),
+      URLMedia('_/theme/red_horse.png'),
+      URLMedia('_/theme/yellow_horse.png')
+    ]
+
 
   def form_show(self, **event_args):
   # Safe place to draw after layout is ready
@@ -54,10 +62,14 @@ class RaceCanvas(RaceCanvasTemplate):
 
     # Draw horses
     for horse in self.horses:
-      self.canvas_1.begin_path()
-      self.canvas_1.fill_style = "blue"
-      self.canvas_1.arc(horse['x'], horse['y'], self.horse_radius)
-      self.canvas_1.fill()
+      index = self.horses.index(horse)
+      img_url = self.horse_images[index]
+
+      self.canvas_1.draw_image(img_url,
+                              horse['x'] - self.horse_radius,
+                              horse['y'] - self.horse_radius,
+                              self.horse_radius * 2,
+                              self.horse_radius * 2)
 
   def button_1_click(self, **event_args):
     # Reset horse positions
