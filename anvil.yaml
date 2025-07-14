@@ -1,5 +1,31 @@
 allow_embedding: false
 db_schema:
+  all_bets:
+    client: none
+    columns:
+    - admin_ui: {order: 0, width: 200}
+      name: pid
+      type: string
+    - admin_ui: {order: 1, width: 200}
+      name: timestamp
+      type: number
+    - admin_ui: {order: 2, width: 200}
+      name: comp_id
+      type: number
+    - admin_ui: {order: 3, width: 200}
+      name: stake
+      type: number
+    - admin_ui: {order: 4, width: 200}
+      name: odds
+      type: number
+    - admin_ui: {order: 5, width: 200}
+      name: potential_winnings
+      type: number
+    - admin_ui: {order: 6, width: 200}
+      name: race_spec
+      type: string
+    server: full
+    title: all_bets
   bets:
     client: none
     columns:
@@ -18,39 +44,60 @@ db_schema:
     - admin_ui: {order: 0, width: 200}
       name: timestamp
       type: number
+    - admin_ui: {order: 5, width: 200}
+      name: race_spec
+      type: string
+    - admin_ui: {order: -1, width: 200}
+      name: pid
+      type: string
     server: full
     title: bets
   demographics:
     client: none
     columns:
-    - admin_ui: {order: 0, width: 200}
-      name: participant_id
+    - admin_ui: {order: 0, width: 297}
+      name: pid
       type: string
     server: full
     title: demographics
-  users:
+  horse_positions:
     client: none
     columns:
     - admin_ui: {order: 0, width: 200}
-      name: email
+      name: pid
       type: string
     - admin_ui: {order: 1, width: 200}
-      name: enabled
-      type: bool
-    - admin_ui: {order: 2, width: 200}
-      name: last_login
-      type: datetime
-    - admin_ui: {order: 3, width: 200}
-      name: password_hash
+      name: race_spec
       type: string
+    - admin_ui: {order: 2, width: 200}
+      name: timestamp
+      type: number
+    - admin_ui: {order: 3, width: 200}
+      name: pos_1
+      type: number
     - admin_ui: {order: 4, width: 200}
-      name: n_password_failures
+      name: pos_2
+      type: number
+    - admin_ui: {order: 2.5, width: 200}
+      name: comp_1
+      type: number
+    - admin_ui: {order: 3.5, width: 200}
+      name: comp_2
       type: number
     - admin_ui: {order: 5, width: 200}
-      name: confirmed_email
-      type: bool
+      name: comp_3
+      type: number
+    - admin_ui: {order: 6, width: 200}
+      name: pos_3
+      type: number
+    - admin_ui: {order: 7, width: 200}
+      name: comp_4
+      type: number
+    - admin_ui: {order: 8, width: 200}
+      name: pos_4
+      type: number
     server: full
-    title: Users
+    title: horse_positions
 name: Main Project
 package_name: Main_Project
 runtime_options:

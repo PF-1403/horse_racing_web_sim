@@ -3,6 +3,7 @@ from anvil import *
 import anvil.tables as tables
 import anvil.tables.query as q
 from anvil.tables import app_tables
+from datetime import datetime
 import anvil.server
 import random
 
@@ -10,7 +11,7 @@ class HomePage(HomePageTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-    #self.content_panel.set_width("100%")
+    self.participant_id = anvil.server.call('get_or_make_id')
     self.initialise_app()
     self.race_started = False
     # Any code you write here will run before the form opens.
@@ -36,8 +37,6 @@ class HomePage(HomePageTemplate):
     print(f'Race Loaded! \nRace number {self.race_index+1}/{len(self.race_ids)}')
     print(f'Race spec: {self.race_spec["config_id"]}')
 
-    #TODO: Create this race_spec function
-    #self.race_canvas_1.load_race_spec(self.race_spec)
     self.race_canvas_1.reset_button()
     self.odds_table_1.populate_static_odds(self.race_spec['competitors'])
     self.balance_bar_1.update_info(balance=self.balance, race_number=self.race_index+1, total_races=len(self.race_ids))
@@ -92,12 +91,12 @@ class HomePage(HomePageTemplate):
 
     if not self.race_started:
       static_odds = next((c["initial_odds"] for c in self.race_spec["competitors"] if c["id"] == comp_id), None)
-      self.balance, bet_log = anvil.server.call('place_bet', comp_id, bet_amt, static_odds, self.balance)
+      self.balance, bet_log = anvil.server.call('place_bet', comp_id, bet_amt, static_odds, self.balance, self.race_spec['config_id'])
       Notification(f"Bet placed on horse {comp_id} for £{bet_amt:.2f} at odds of {static_odds:.2f}", style="success").show()
       print("Successfully placed static bet")
     else:
       dynamic_odds = self.odds_table_1.get_current_odds(comp_id)
-      self.balance, bet_log = anvil.server.call('place_bet', comp_id, bet_amt, dynamic_odds, self.balance)
+      self.balance, bet_log = anvil.server.call('place_bet', comp_id, bet_amt, dynamic_odds, self.balance, self.race_spec['config_id'])
       Notification(f"Bet placed on horse {comp_id} for £{bet_amt:.2f} at odds of {dynamic_odds:.2f}", style="success").show()
       print("Successfully placed dynamic bet")
 
@@ -110,8 +109,11 @@ class HomePage(HomePageTemplate):
     self.finish_line = event_args['finish_line']
     self.race_started = True 
     self.race_timer.enabled = True
+    self.race_log = {}
     
   def race_timer_tick(self, **event_args):
+    positions = {}
+    
     if not self.race_started:
       return
 
@@ -123,7 +125,8 @@ class HomePage(HomePageTemplate):
 
     # Check for race winner
     if self.race_winner is None:
-      for horse in self.horse_location:
+      for horse in self.horse_location:        
+          # Check for race winner
           if (horse['x'] == self.finish_line):
             self.race_winner = horse['id']
             break
@@ -133,6 +136,10 @@ class HomePage(HomePageTemplate):
     ## Now populate dynamic odds here ##
     self.calculate_dynamic_odds(self.race_spec['competitors'], self.horse_location)
 
+    ## Update race_log
+    timestamp = datetime.utcnow().timestamp()
+    self.race_log[timestamp] = self.horse_location
+    
     if not race_ongoing:
       self.race_timer.enabled = False
       self.race_started = False
@@ -181,7 +188,6 @@ class HomePage(HomePageTemplate):
       self.race_canvas_1.reset_canvas()
       self.load_next_race()
       
-
   def display_results_end(self, stake, winnings):
     end_page = alert(
       title=f'Final Race Complete - Horse {self.race_winner} Won! \nThanks For Participating!',
@@ -200,8 +206,10 @@ class HomePage(HomePageTemplate):
       open_form('EndForm')
 
   def log_results(self):
-    pass
+    anvil.server.call('update_log_table', self.race_log, self.race_spec['config_id'])
+    anvil.server.call('transfer_bets')
 
   def race_complete(self):
-    # self.log_data()
+    self.log_results()
     self.calc_and_disp_results()
+    

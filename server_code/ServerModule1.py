@@ -136,7 +136,7 @@ def get_race_spec(config_id="default"):
     return spec
 
 @anvil.server.callable
-def place_bet(competitor_id, stake, odds, balance):
+def place_bet(competitor_id, stake, odds, balance, spec):
   winnings = (stake * odds) - stake
   balance -= stake
   timestamp = datetime.utcnow().timestamp()
@@ -146,14 +146,18 @@ def place_bet(competitor_id, stake, odds, balance):
     "comp_id": competitor_id,
     "stake": stake,
     "odds": odds,
-    "potential_winnings": round(winnings, 2)
+    "potential_winnings": round(winnings, 2),
+    "race_spec": spec,
+    "pid": get_or_make_id()
   }
   app_tables.bets.add_row(
     timestamp=timestamp,
     comp_id=competitor_id,
     stake=stake,
     odds=odds,
-    potential_winnings=round(winnings, 2)
+    potential_winnings=round(winnings, 2),
+    race_spec=spec,
+    pid=get_or_make_id()
   )
 
   return balance, log_entry
@@ -179,6 +183,26 @@ def clear_bets_table():
     row.delete()
 
 @anvil.server.callable
-def store_participant_id(participant_id):
-  if not app_tables.demographics.get(participant_id=participant_id):
-    app_tables.demographics.add_row(participant_id=participant_id)
+def get_or_make_id():
+  if 'participant_id' not in anvil.server.session:
+    pid = str(uuid.uuid4())
+    anvil.server.session['participant_id'] = pid
+    app_tables.demographics.add_row(pid=pid)
+  return anvil.server.session['participant_id']
+
+@anvil.server.callable
+def transfer_bets():
+  for row in app_tables.bets.search():
+    app_tables.all_bets.add_row(
+      timestamp=row['timestamp'],
+      comp_id=row['comp_id'],
+      stake=row['stake'],
+      odds=row['odds'],
+      potential_winnings=row['potential_winnings'],
+      race_spec=row['race_spec'],
+      pid=row['pid']
+    )
+
+@anvil.server.callable
+def update_log_table(race_log, race_id):
+  pass
