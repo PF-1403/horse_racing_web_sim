@@ -11,7 +11,9 @@ components:
     type: Label
   layout_properties: {grid_position: 'ABVQEQ,ZQLDJJ'}
   name: grid_panel_1
-  properties: {}
+  properties:
+    spacing:
+      margin: ['2', null, '0', null]
   type: GridPanel
 container:
   properties: {border: ''}

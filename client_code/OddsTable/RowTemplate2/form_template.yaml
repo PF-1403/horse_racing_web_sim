@@ -27,7 +27,7 @@ components:
   - {code: '"£{:.2f}".format(self.item[''winnings''])', property: text, writeback: false}
   layout_properties: {column: DCZYKP}
   name: label_winnings
-  properties: {align: left}
+  properties: {align: center}
   type: Label
 - data_bindings:
   - {code: 'self.item[''horse_image'']', property: source, writeback: false}

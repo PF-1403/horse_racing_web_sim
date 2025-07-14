@@ -10,6 +10,7 @@ class HomePage(HomePageTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
+    #self.content_panel.set_width("100%")
     self.initialise_app()
     self.race_started = False
     # Any code you write here will run before the form opens.

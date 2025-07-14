@@ -1,37 +1,42 @@
 components:
-- layout_properties: {grid_position: 'LHDMMK,SPMNDI'}
-  name: title
-  properties: {align: center, bold: true, font_size: 18, role: headline, text: Place Bet, underline: true}
-  type: Label
 - components:
-  - layout_properties: {col_xs: 3, row: UWULDT, width_xs: 3}
-    name: competitor_label
-    properties: {align: right, bold: true, font_size: 12, text: 'Competitor ID: '}
-    type: Label
-  - event_bindings: {pressed_enter: competitor_text_pressed_enter}
-    layout_properties: {col_xs: 6, row: UWULDT, width_xs: 2}
-    name: competitor_text
-    properties: {font_size: 12}
-    type: TextBox
-  - layout_properties: {col_xs: 3, row: JEXLCQ, width_xs: 3}
-    name: bet_label
-    properties: {align: right, bold: true, font_size: 12, text: 'Bet Amount (£):'}
-    type: Label
-  - event_bindings: {pressed_enter: bet_text_pressed_enter}
-    layout_properties: {col_xs: 6, row: JEXLCQ, width_xs: 2}
-    name: bet_text
-    properties: {font_size: 12}
-    type: TextBox
-  - event_bindings: {click: bet_button_click}
-    layout_properties: {col_xs: 5, row: DWZAVH, width_xs: 3}
-    name: bet_button
-    properties: {align: right, font_size: 12, text: Place Bet}
-    type: Button
-  data_bindings: []
-  layout_properties: {grid_position: 'HLVWXJ,RXICNN'}
-  name: grid_panel_1
-  properties: {role: null}
-  type: GridPanel
+  - components:
+    - layout_properties: {col_xs: 3, row: TNERFJ, width_xs: 6}
+      name: title
+      properties: {align: center, bold: true, font_size: 18, role: headline, text: Place Bet, underline: true}
+      type: Label
+    - layout_properties: {col_xs: 1, row: RRXQCL, width_xs: 5}
+      name: competitor_label
+      properties: {align: right, bold: true, font_size: 12, text: 'Competitor ID: '}
+      type: Label
+    - event_bindings: {pressed_enter: competitor_text_pressed_enter}
+      layout_properties: {col_xs: 6, row: RRXQCL, width_xs: 4}
+      name: competitor_text
+      properties: {font_size: 12}
+      type: TextBox
+    - layout_properties: {col_xs: 2, row: PPDHAG, width_xs: 4}
+      name: bet_label
+      properties: {align: right, bold: true, font_size: 12, text: 'Bet Amount (£):'}
+      type: Label
+    - event_bindings: {pressed_enter: bet_text_pressed_enter}
+      layout_properties: {col_xs: 6, row: PPDHAG, width_xs: 4}
+      name: bet_text
+      properties: {font_size: 12}
+      type: TextBox
+    - event_bindings: {click: bet_button_click}
+      layout_properties: {col_xs: 4, row: AINNCV, width_xs: 5}
+      name: bet_button
+      properties: {align: left, font_size: 12, text: Place Bet}
+      type: Button
+    data_bindings: []
+    layout_properties: {width: 336.2275361328125}
+    name: grid_panel_1
+    properties: {role: null}
+    type: GridPanel
+  layout_properties: {grid_position: 'XBTPTT,FSINCW'}
+  name: flow_panel_1
+  properties: {align: center}
+  type: FlowPanel
 container:
   properties: {role: null}
   type: ColumnPanel
