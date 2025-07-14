@@ -177,3 +177,8 @@ def sum_logs():
 def clear_bets_table():
   for row in app_tables.bets.search():
     row.delete()
+
+@anvil.server.callable
+def store_participant_id(participant_id):
+  if not app_tables.demographics.get(participant_id=participant_id):
+    app_tables.demographics.add_row(participant_id=participant_id)

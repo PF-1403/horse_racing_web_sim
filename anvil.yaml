@@ -20,6 +20,14 @@ db_schema:
       type: number
     server: full
     title: bets
+  demographics:
+    client: none
+    columns:
+    - admin_ui: {order: 0, width: 200}
+      name: participant_id
+      type: string
+    server: full
+    title: demographics
 name: Main Project
 package_name: Main_Project
 runtime_options:
