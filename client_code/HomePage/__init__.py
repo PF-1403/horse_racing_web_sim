@@ -6,6 +6,7 @@ from anvil.tables import app_tables
 from datetime import datetime
 import anvil.server
 import random
+import copy
 
 class HomePage(HomePageTemplate):
   def __init__(self, **properties):
@@ -112,8 +113,6 @@ class HomePage(HomePageTemplate):
     self.race_log = {}
     
   def race_timer_tick(self, **event_args):
-    positions = {}
-    
     if not self.race_started:
       return
 
@@ -122,6 +121,10 @@ class HomePage(HomePageTemplate):
       if horse['x'] < self.finish_line:
         horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
         race_ongoing = True
+
+    # Add location to race_log
+    timestamp = str(datetime.utcnow().timestamp())
+    self.race_log[timestamp] = copy.deepcopy(self.horse_location)  
 
     # Check for race winner
     if self.race_winner is None:
@@ -135,10 +138,6 @@ class HomePage(HomePageTemplate):
     
     ## Now populate dynamic odds here ##
     self.calculate_dynamic_odds(self.race_spec['competitors'], self.horse_location)
-
-    ## Update race_log
-    timestamp = datetime.utcnow().timestamp()
-    self.race_log[timestamp] = self.horse_location
     
     if not race_ongoing:
       self.race_timer.enabled = False
@@ -206,8 +205,8 @@ class HomePage(HomePageTemplate):
       open_form('EndForm')
 
   def log_results(self):
-    anvil.server.call('update_log_table', self.race_log, self.race_spec['config_id'])
-    anvil.server.call('transfer_bets')
+    with anvil.server.no_loading_indicator:
+      anvil.server.call('launch_background_tasks', self.race_log, self.race_spec['config_id'])
 
   def race_complete(self):
     self.log_results()

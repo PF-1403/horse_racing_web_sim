@@ -190,7 +190,7 @@ def get_or_make_id():
     app_tables.demographics.add_row(pid=pid)
   return anvil.server.session['participant_id']
 
-@anvil.server.callable
+@anvil.server.background_task
 def transfer_bets():
   for row in app_tables.bets.search():
     app_tables.all_bets.add_row(
@@ -203,6 +203,21 @@ def transfer_bets():
       pid=row['pid']
     )
 
-@anvil.server.callable
+@anvil.server.background_task
 def update_log_table(race_log, race_id):
-  pass
+  for time, horse_info in race_log.items():
+      pos_dict = {horse['id']:horse['x'] for horse in horse_info}
+      app_tables.horse_positions.add_row(
+        timestamp=float(time),
+        pid=get_or_make_id(),
+        race_spec=race_id,
+        pos_1=pos_dict[1],
+        pos_2=pos_dict[2],
+        pos_3=pos_dict[3],
+        pos_4=pos_dict[4]
+      )
+
+@anvil.server.callable
+def launch_background_tasks(race_log, race_id):
+  anvil.server.launch_background_task('transfer_bets')
+  anvil.server.launch_background_task('update_log_table', race_log, race_id)

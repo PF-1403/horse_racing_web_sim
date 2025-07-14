@@ -78,20 +78,8 @@ db_schema:
     - admin_ui: {order: 4, width: 200}
       name: pos_2
       type: number
-    - admin_ui: {order: 2.5, width: 200}
-      name: comp_1
-      type: number
-    - admin_ui: {order: 3.5, width: 200}
-      name: comp_2
-      type: number
-    - admin_ui: {order: 5, width: 200}
-      name: comp_3
-      type: number
     - admin_ui: {order: 6, width: 200}
       name: pos_3
-      type: number
-    - admin_ui: {order: 7, width: 200}
-      name: comp_4
       type: number
     - admin_ui: {order: 8, width: 200}
       name: pos_4
