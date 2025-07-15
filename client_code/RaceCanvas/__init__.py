@@ -67,6 +67,18 @@ class RaceCanvas(RaceCanvasTemplate):
     self.canvas_1.line_to(self.start_line + 0.5, canvas_height)
     self.canvas_1.stroke()
 
+    # Draw bets line
+    html_canvas = anvil.js.get_dom_node(self.canvas_1)
+    context = html_canvas.getContext('2d')
+    context.setLineDash([5, 15])
+    self.start_line = 0.8 * self.finish_line
+    self.canvas_1.begin_path()
+    self.canvas_1.stroke_style = "black"
+    self.canvas_1.move_to(self.start_line + 0.5, 0)
+    self.canvas_1.line_to(self.start_line + 0.5, canvas_height)
+    self.canvas_1.stroke()
+    context.setLineDash([])
+
     # Draw lanes
     lanes = [80, 160, 240]
     for lane in lanes:

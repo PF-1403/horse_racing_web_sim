@@ -25,9 +25,14 @@ class HomePage(HomePageTemplate):
     self.finish_line = 100
     self.race_started = False
     self.race_winner = None
-    #self.race_ids = ["race1", "race2", "race3", "race4", "race5"]
-    self.race_ids = ["race4"]
-    random.shuffle(self.race_ids)
+    self.bets_closed = False
+    self.backed_horse = None
+    self.race_ids = ["race1", "race2", "race3", "race4", "race5"]
+    #self.race_ids = ["race5"]
+    fixed = self.race_ids[0]
+    shuffle = self.race_ids[1:]
+    random.shuffle(shuffle)
+    self.race_ids = [fixed] + shuffle
     print("Initialisation of app is complete!")
 
     self.load_next_race()
@@ -40,6 +45,7 @@ class HomePage(HomePageTemplate):
     print(f'Race spec: {self.race_spec["config_id"]}')
 
     self.race_canvas_1.reset_button()
+    self.place_bet_1.bet_button.enabled = True
     self.odds_table_1.populate_static_odds(self.race_spec['competitors'])
     self.balance_bar_1.update_info(balance=self.balance, race_number=self.race_index+1, total_races=len(self.race_ids))
 
@@ -108,21 +114,29 @@ class HomePage(HomePageTemplate):
 
   def start_race(self, **event_args):
     # Establish initial horse location, show race started
+    bet_placed = self.check_pre_bet()
+    if not bet_placed:
+      self.race_canvas_1.button_1.enabled = True
+      return
     self.horse_location = event_args['horses']
     self.finish_line = event_args['finish_line']
     self.race_started = True 
     self.race_timer.enabled = True
     self.race_log = {}
-    print(f'Race Spec: {self.race_spec}')
     self.favourite = self.race_spec['favourite_id']
     self.second = self.race_spec['second_id']
     self.third = self.race_spec['third_id']
     if self.favourite == self.backed_horse:
       self.favourite = self.race_spec['second_id']
-      print(f'The fav is: {self.favourite}')
     self.fallen_ids = set()
-    print(f'Favourite identified: {self.favourite}')
-    
+
+  def check_pre_bet(self):
+    if not self.backed_horse:
+      Notification("You must place a pre-race bet!", style="danger").show()
+      return False
+    else:
+      return True
+  
   def race_timer_tick(self, **event_args):
     if not self.race_started:
       return
@@ -162,9 +176,9 @@ class HomePage(HomePageTemplate):
             if horse['x'] < 0.2 * self.finish_line:
               horse['x'] = horse['x'] + (0.6 * random.randint(1, 5))
             elif (horse['x'] > (0.2 * self.finish_line)) and (horse['x'] < (0.7 * self.finish_line)):
-              horse['x'] = horse['x'] + (1.4 * random.randint(1, 5))
+              horse['x'] = horse['x'] + (1.2 * random.randint(1, 5))
             else:
-              horse['x'] = min(horse['x'] + (1.4 * random.randint(1, 5)), self.finish_line)
+              horse['x'] = min(horse['x'] + (1.3 * random.randint(1, 5)), self.finish_line)
           elif horse['id'] == self.favourite:
             if horse['x'] < 0.2 * self.finish_line:
               horse['x'] = horse['x'] + (0.6 * random.randint(1, 5))
@@ -186,6 +200,7 @@ class HomePage(HomePageTemplate):
             else:
               print("Horse has fallen")
               self.fallen_ids.add(horse['id'])  # Mark as fallen
+              Notification(f"Horse {horse['id']} has fallen!", style="danger", timeout=0.75).show()
               # Do not set race_ongoing
               continue
           elif horse['id'] == self.second:
@@ -206,6 +221,16 @@ class HomePage(HomePageTemplate):
     timestamp = str(datetime.utcnow().timestamp())
     self.race_log[timestamp] = copy.deepcopy(self.horse_location)  
 
+    # Check for bets closed
+    if not self.bets_closed:
+      for horse in self.horse_location:        
+        if (horse['x'] >= (0.8 * self.finish_line)):
+          self.bets_closed = True
+          Notification("No More Bets!", style="danger", timeout=0.75).show()
+          self.place_bet_1.bet_button.enabled = False
+          break
+
+  
     # Check for race winner
     if self.race_winner is None:
       for horse in self.horse_location:        
@@ -222,6 +247,7 @@ class HomePage(HomePageTemplate):
     if not race_ongoing:
       self.race_timer.enabled = False
       self.race_started = False
+      self.backed_horse = None
       self.race_complete()
 
   def calc_and_disp_results(self):
@@ -229,11 +255,15 @@ class HomePage(HomePageTemplate):
     print(f'Race winner: {self.race_winner}')
     lost_stake = 0
     total_winnings = 0
+    stake_returned = 0
     
     for id, amount in stake.items():
       if int(id) != int(self.race_winner):
         lost_stake += float(amount)
-        
+      elif int(id) == int(self.race_winner):
+        self.balance += amount
+        stake_returned = amount
+                
     for id, value in winnings.items():
       if int(id) == int(self.race_winner):
         total_winnings = float(value)
@@ -244,16 +274,17 @@ class HomePage(HomePageTemplate):
 
     self.race_index += 1
     if self.race_index == len(self.race_ids):
-      self.display_results_end(lost_stake, total_winnings)
+      self.display_results_end(lost_stake, total_winnings, stake_returned)
     else:
-      self.display_results_next_race(lost_stake, total_winnings)
+      self.display_results_next_race(lost_stake, total_winnings, stake_returned)
     
-  def display_results_next_race(self, stake, winnings):
+  def display_results_next_race(self, stake, winnings, stake_returned):
     next_race = alert(
       title=f'Race Complete - Horse {self.race_winner} Won!',
       content=(
         f"Stakes lost on losers:                     £{stake:.2f}\n"
         f"Amount won on winners:               £{winnings:.2f}\n"
+        f"Stakes returned:                              £{stake_returned:.2f}\n"
         f"\n"
         f"New balance:                                   £{self.balance:.2f}"
       ),
@@ -267,12 +298,13 @@ class HomePage(HomePageTemplate):
       self.race_canvas_1.reset_canvas()
       self.load_next_race()
       
-  def display_results_end(self, stake, winnings):
+  def display_results_end(self, stake, winnings, stake_returned):
     end_page = alert(
       title=f'Final Race Complete - Horse {self.race_winner} Won! \nThanks For Participating!',
       content=(
         f"Stakes lost on losers:                     £{stake:.2f}\n"
         f"Amount won on winners:               £{winnings:.2f}\n"
+        f"Stakes returned:                              £{stake_returned:.2f}\n"
         f"\n"
         f"New balance:                                   £{self.balance:.2f}"
       ),
