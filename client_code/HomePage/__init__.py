@@ -136,7 +136,7 @@ class HomePage(HomePageTemplate):
             race_ongoing = True
           
         elif self.race_spec['config_id'] == 'race2':
-          if horse['id'] == self.favourite:
+          if horse['id'] == self.race_spec['favourite_id']:
             horse['x'] = min(horse['x'] + (1.2 * random.randint(1, 5)), self.finish_line)
             print(f'Horse {horse["id"]} boosted!')
           else:
