@@ -18,11 +18,11 @@ def find_favourite_id(competitors):
 
 def find_second_id(competitors):
   sorted_competitors = sorted(competitors, key=lambda x: float(x['initial_odds']))
-  return sorted_competitors[1]
+  return sorted_competitors[1]['id']
 
 def find_third_id(competitors):
   sorted_competitors = sorted(competitors, key=lambda x: float(x['initial_odds']))
-  return sorted_competitors[2]
+  return sorted_competitors[2]['id']
 
 
 @anvil.server.callable

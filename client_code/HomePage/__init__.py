@@ -26,7 +26,7 @@ class HomePage(HomePageTemplate):
     self.race_started = False
     self.race_winner = None
     #self.race_ids = ["race1", "race2", "race3", "race4", "race5"]
-    self.race_ids = ["race2"]
+    self.race_ids = ["race4"]
     random.shuffle(self.race_ids)
     print("Initialisation of app is complete!")
 
@@ -113,11 +113,13 @@ class HomePage(HomePageTemplate):
     self.race_started = True 
     self.race_timer.enabled = True
     self.race_log = {}
+    print(f'Race Spec: {self.race_spec}')
     self.favourite = self.race_spec['favourite_id']
     self.second = self.race_spec['second_id']
     self.third = self.race_spec['third_id']
     if self.favourite == self.backed_horse:
-      self.favourite = self.second
+      self.favourite = self.race_spec['second_id']
+      print(f'The fav is: {self.favourite}')
     self.fallen_ids = set()
     print(f'Favourite identified: {self.favourite}')
     
@@ -147,27 +149,27 @@ class HomePage(HomePageTemplate):
           if horse['id'] == self.backed_horse:
             if horse['x'] < 0.3 * self.finish_line:
               horse['x'] = horse['x'] + random.randint(1, 5)
-            elif (horse['x'] > (0.3 * self.finish_line)) and (horse['x'] < (0.6 * self.finish_line)):
-              horse['x'] = horse['x'] + (1.5 * random.randint(1, 5))
+            elif (horse['x'] > (0.3 * self.finish_line)) and (horse['x'] < (0.7 * self.finish_line)):
+              horse['x'] = horse['x'] + (1.25 * random.randint(1, 5))
             else:
-              horse['x'] = min(horse['x'] + (0.5 * random.randint(1, 5)), self.finish_line)
+              horse['x'] = min(horse['x'] + (0.65 * random.randint(1, 5)), self.finish_line)
           else:
             horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
           race_ongoing = True
           
         elif self.race_spec['config_id'] == 'race4':
           if horse['id'] == self.backed_horse:
-            if horse['x'] < 0.3 * self.finish_line:
-              horse['x'] = horse['x'] + (0.8 * random.randint(1, 5))
-            elif (horse['x'] > (0.3 * self.finish_line)) and (horse['x'] < (0.6 * self.finish_line)):
-              horse['x'] = horse['x'] + (1.3 * random.randint(1, 5))
+            if horse['x'] < 0.2 * self.finish_line:
+              horse['x'] = horse['x'] + (0.6 * random.randint(1, 5))
+            elif (horse['x'] > (0.2 * self.finish_line)) and (horse['x'] < (0.7 * self.finish_line)):
+              horse['x'] = horse['x'] + (1.4 * random.randint(1, 5))
             else:
-              horse['x'] = min(horse['x'] + (1.3 * random.randint(1, 5)), self.finish_line)
+              horse['x'] = min(horse['x'] + (1.4 * random.randint(1, 5)), self.finish_line)
           elif horse['id'] == self.favourite:
-            if horse['x'] < 0.3 * self.finish_line:
-              horse['x'] = horse['x'] + (0.8 * random.randint(1, 5))
-            elif (horse['x'] > (0.3 * self.finish_line)) and (horse['x'] < (0.6 * self.finish_line)):
-              horse['x'] = horse['x'] + (1.3 * random.randint(1, 5))
+            if horse['x'] < 0.2 * self.finish_line:
+              horse['x'] = horse['x'] + (0.6 * random.randint(1, 5))
+            elif (horse['x'] > (0.2 * self.finish_line)) and (horse['x'] < (0.7 * self.finish_line)):
+              horse['x'] = horse['x'] + (1.4 * random.randint(1, 5))
             else:
               horse['x'] = min(horse['x'] + (1.1 * random.randint(1, 5)), self.finish_line)        
           else:
