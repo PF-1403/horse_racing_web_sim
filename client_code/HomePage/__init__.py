@@ -25,7 +25,8 @@ class HomePage(HomePageTemplate):
     self.finish_line = 100
     self.race_started = False
     self.race_winner = None
-    self.race_ids = ["race1", "race2", "race3", "race4", "race5"]
+    #self.race_ids = ["race1", "race2", "race3", "race4", "race5"]
+    self.race_ids = ["race2"]
     random.shuffle(self.race_ids)
     print("Initialisation of app is complete!")
 
@@ -94,6 +95,7 @@ class HomePage(HomePageTemplate):
       static_odds = next((c["initial_odds"] for c in self.race_spec["competitors"] if c["id"] == comp_id), None)
       self.balance, bet_log = anvil.server.call('place_bet', comp_id, bet_amt, static_odds, self.balance, self.race_spec['config_id'])
       Notification(f"Bet placed on horse {comp_id} for £{bet_amt:.2f} at odds of {static_odds:.2f}", style="success").show()
+      self.backed_horse = comp_id
       print("Successfully placed static bet")
     else:
       dynamic_odds = self.odds_table_1.get_current_odds(comp_id)
@@ -111,17 +113,92 @@ class HomePage(HomePageTemplate):
     self.race_started = True 
     self.race_timer.enabled = True
     self.race_log = {}
+    self.favourite = self.race_spec['favourite_id']
+    self.second = self.race_spec['second_id']
+    self.third = self.race_spec['third_id']
+    if self.favourite == self.backed_horse:
+      self.favourite = self.second
+    self.fallen_ids = set()
+    print(f'Favourite identified: {self.favourite}')
     
   def race_timer_tick(self, **event_args):
-    
     if not self.race_started:
       return
 
     race_ongoing = False
     for horse in self.horse_location:
+      if horse['id'] in getattr(self, 'fallen_ids', set()):
+        continue 
+      # Check which race is being called
       if horse['x'] < self.finish_line:
-        horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
-        race_ongoing = True
+        if self.race_spec['config_id'] == 'race1':
+            horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
+            race_ongoing = True
+          
+        elif self.race_spec['config_id'] == 'race2':
+          if horse['id'] == self.favourite:
+            horse['x'] = min(horse['x'] + (1.2 * random.randint(1, 5)), self.finish_line)
+            print(f'Horse {horse["id"]} boosted!')
+          else:
+            horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
+          race_ongoing = True
+          
+        elif self.race_spec['config_id'] == 'race3':
+          if horse['id'] == self.backed_horse:
+            if horse['x'] < 0.3 * self.finish_line:
+              horse['x'] = horse['x'] + random.randint(1, 5)
+            elif (horse['x'] > (0.3 * self.finish_line)) and (horse['x'] < (0.6 * self.finish_line)):
+              horse['x'] = horse['x'] + (1.5 * random.randint(1, 5))
+            else:
+              horse['x'] = min(horse['x'] + (0.5 * random.randint(1, 5)), self.finish_line)
+          else:
+            horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
+          race_ongoing = True
+          
+        elif self.race_spec['config_id'] == 'race4':
+          if horse['id'] == self.backed_horse:
+            if horse['x'] < 0.3 * self.finish_line:
+              horse['x'] = horse['x'] + (0.8 * random.randint(1, 5))
+            elif (horse['x'] > (0.3 * self.finish_line)) and (horse['x'] < (0.6 * self.finish_line)):
+              horse['x'] = horse['x'] + (1.3 * random.randint(1, 5))
+            else:
+              horse['x'] = min(horse['x'] + (1.3 * random.randint(1, 5)), self.finish_line)
+          elif horse['id'] == self.favourite:
+            if horse['x'] < 0.3 * self.finish_line:
+              horse['x'] = horse['x'] + (0.8 * random.randint(1, 5))
+            elif (horse['x'] > (0.3 * self.finish_line)) and (horse['x'] < (0.6 * self.finish_line)):
+              horse['x'] = horse['x'] + (1.3 * random.randint(1, 5))
+            else:
+              horse['x'] = min(horse['x'] + (1.1 * random.randint(1, 5)), self.finish_line)        
+          else:
+            horse['x'] = min(horse['x'] + random.randint(1, 5), self.finish_line)
+          race_ongoing = True
+
+        elif self.race_spec['config_id'] == 'race5':
+          if horse['id'] == self.favourite:
+            if horse['id'] in self.fallen_ids:
+              continue  # Already fallen, stays still, not race_ongoing
+            if horse['x'] < 0.5 * self.finish_line:
+              horse['x'] = horse['x'] + random.randint(1, 5)
+              race_ongoing = True
+            else:
+              print("Horse has fallen")
+              self.fallen_ids.add(horse['id'])  # Mark as fallen
+              # Do not set race_ongoing
+              continue
+          elif horse['id'] == self.second:
+            if horse['x'] < 0.5 * self.finish_line:
+              horse['x'] = horse['x'] + random.randint(1, 5)
+            else:
+              horse['x'] = min(horse['x'] + (0.9 * random.randint(1, 5)), self.finish_line)        
+          elif horse['id'] == self.third:
+            if horse['x'] < 0.5 * self.finish_line:
+              horse['x'] = horse['x'] + random.randint(1, 5)
+            else:
+              horse['x'] = min(horse['x'] + (1.1 * random.randint(1, 5)), self.finish_line)           
+          else:
+            horse['x'] = min(horse['x'] + (0.8 * random.randint(1, 5)), self.finish_line)
+          race_ongoing = True
 
     # Add location to race_log
     timestamp = str(datetime.utcnow().timestamp())

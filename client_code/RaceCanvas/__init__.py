@@ -90,7 +90,7 @@ class RaceCanvas(RaceCanvasTemplate):
   def button_1_click(self, **event_args):
     # Disable button and raise event to start the race
     self.button_1.enabled = False
-    self.raise_event("x-start-race", horses=self.horses, finish_line = self.finish_line)
+    self.raise_event("x-start-race", horses=self.horses, finish_line=self.finish_line)
 
   def reset_button(self):
     self.button_1.enabled = True

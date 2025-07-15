@@ -13,10 +13,17 @@ import uuid
 bet_log = {}
 
 def find_favourite_id(competitors):
-  if not competitors: 
-    return None
   # Looks at the list of competitors and finds the horse which has the lowest odds in the list
   return min(competitors, key=lambda x: float(x.get('initial_odds', 999)))['id']
+
+def find_second_id(competitors):
+  sorted_competitors = sorted(competitors, key=lambda x: float(x['initial_odds']))
+  return sorted_competitors[1]
+
+def find_third_id(competitors):
+  sorted_competitors = sorted(competitors, key=lambda x: float(x['initial_odds']))
+  return sorted_competitors[2]
+
 
 @anvil.server.callable
 def get_race_spec(config_id="default"):
@@ -48,11 +55,15 @@ def get_race_spec(config_id="default"):
   # base spec includes the basic track length and then and 'in play window'
   if config_id == "race1":
     spec = base_spec.copy()
+    competitors = competitors_set1
     spec.update({
       "race_id": 1,
       "config_id": "race1",
       "race_type": "pre_win_predictable",
-      "competitors": competitors_set1,
+      "competitors": competitors,
+      "favourite_id": find_favourite_id(competitors),
+      "second_id": find_second_id(competitors),
+      "third_id": find_third_id(competitors)
     })
     return spec
 
@@ -65,56 +76,78 @@ def get_race_spec(config_id="default"):
       "config_id": "race2",
       "race_type": "favourite_win_predictable",
       "competitors": competitors,
-      "favourite_id": find_favourite_id(competitors)
+      "favourite_id": find_favourite_id(competitors),
+      "second_id": find_second_id(competitors),
+      "third_id": find_third_id(competitors)
     })
     return spec
 
   elif config_id == "race3":
     spec = base_spec.copy()
+    competitors = competitors_set3
     spec.update({
       "race_id": "3",
       "config_id": "race3",
       "race_type": "pre_lead_then_lose",
-      "competitors": competitors_set3,
+      "competitors": competitors,
+      "favourite_id": find_favourite_id(competitors),
+      "second_id": find_second_id(competitors),
+      "third_id": find_third_id(competitors)
     })
     return spec
 
   elif config_id == "race4":
     spec = base_spec.copy()
+    competitors = competitors_set1
     spec.update({
       "race_id": "4",
       "config_id": "race4",
       "race_type": "pre_mid_lead_then_lose",
-      "competitors": competitors_set1,
+      "competitors": competitors,
+      "favourite_id": find_favourite_id(competitors),
+      "second_id": find_second_id(competitors),
+      "third_id": find_third_id(competitors)
     })
     return spec
   elif config_id == "race5":
     spec = base_spec.copy()
+    competitors = competitors_set2
     spec.update({
       "race_id": "5",
       "config_id": "race5",
       "race_type": "pre_late_surge_win_50",
-      "competitors": competitors_set2,
+      "competitors": competitors,
+      "favourite_id": find_favourite_id(competitors),
+      "second_id": find_second_id(competitors),
+      "third_id": find_third_id(competitors)
     })
     return spec
 
   elif config_id == "race6":
     spec = base_spec.copy()
+    competitors = competitors_set3
     spec.update({
       "race_id": "6",
       "config_id": "race6",
       "race_type": "pre_mid_surge_win_25",
-      "competitors": competitors_set3,
+      "competitors": competitors,
+      "favourite_id": find_favourite_id(competitors),
+      "second_id": find_second_id(competitors),
+      "third_id": find_third_id(competitors)
     })
     return spec
 
   elif config_id == "race7":
     spec = base_spec.copy()
+    competitors = competitors_set1
     spec.update({
       "race_id": "7",
       "config_id": "race7",
       "race_type": "pre_very_late_surge_win_75",
-      "competitors": competitors_set1,
+      "competitors": competitors,
+      "favourite_id": find_favourite_id(competitors),
+      "second_id": find_second_id(competitors),
+      "third_id": find_third_id(competitors)
     })
     return spec
 
@@ -125,8 +158,7 @@ def get_race_spec(config_id="default"):
       "race_id": 0,
       "config_id": "default",
       "race_type": "random",
-      "competitors": competitors_set1,
-
+      "competitors": competitors_set1
     })
     return spec
 
