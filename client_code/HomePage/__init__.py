@@ -113,6 +113,7 @@ class HomePage(HomePageTemplate):
     self.race_log = {}
     
   def race_timer_tick(self, **event_args):
+    
     if not self.race_started:
       return
 
