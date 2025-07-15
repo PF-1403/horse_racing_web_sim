@@ -15,13 +15,8 @@ bet_log = {}
 def find_favourite_id(competitors):
   if not competitors: 
     return None
-    # Looks at the list of competitors and finds the horse which has the lowest odds in the list
-  try: 
-    return min(competitors, key=lambda x: float(x.get('initial_odds', 999)))['id']
-  except (ValueError, TypeError):
-    print("Warning: Could not determine favourite due to invalid odds format.")
-    # Except looks like it just returns the first id in the list
-    return competitors[0]['id'] if competitors else None
+  # Looks at the list of competitors and finds the horse which has the lowest odds in the list
+  return min(competitors, key=lambda x: float(x.get('initial_odds', 999)))['id']
 
 @anvil.server.callable
 def get_race_spec(config_id="default"):

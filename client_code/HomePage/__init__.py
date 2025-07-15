@@ -25,7 +25,7 @@ class HomePage(HomePageTemplate):
     self.finish_line = 100
     self.race_started = False
     self.race_winner = None
-    self.race_ids = ["race1", "race2", "race3", "race4", "race5", "race6", "race7"]
+    self.race_ids = ["race1", "race2", "race3", "race4", "race5"]
     random.shuffle(self.race_ids)
     print("Initialisation of app is complete!")
 
