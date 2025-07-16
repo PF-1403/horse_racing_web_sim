@@ -248,3 +248,22 @@ def update_log_table(race_log, race_id):
 def launch_background_tasks(race_log, race_id):
   anvil.server.launch_background_task('transfer_bets')
   anvil.server.launch_background_task('update_log_table', race_log, race_id)
+
+@anvil.server.background_task
+def demographics(vals):
+  pid = get_or_make_id()
+  row = app_tables.demographics.get(pid=pid)
+  if row:
+    row['gender'] = vals[0]
+    print(f'Vals[0]: {vals[0]}')
+    row['age'] = vals[1]
+    row['frequency'] = vals[2]
+    row['exchange'] = vals[3]
+    row['odds'] = vals[4]
+    row['amount'] = vals[5]
+  else:
+    print("User not found")
+
+@anvil.server.callable
+def store_demographics(values):
+  anvil.server.launch_background_task('demographics', values)

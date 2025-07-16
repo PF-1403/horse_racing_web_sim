@@ -13,9 +13,10 @@ components:
     name: column_panel_1
     properties: {}
     type: ColumnPanel
-  - layout_properties: {grid_position: 'WUICKH,IVWBKB'}
+  - data_bindings: []
+    layout_properties: {grid_position: 'WUICKH,IVWBKB'}
     name: label_2
-    properties: {align: center, text: Instructions & ethical warnings to go here}
+    properties: {align: center, text: text}
     type: Label
   - event_bindings: {click: start_button_click}
     layout_properties: {grid_position: 'IWNUNI,ZYAGUT'}

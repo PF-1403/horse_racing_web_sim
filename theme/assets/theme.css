@@ -808,3 +808,31 @@ https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-m
 .centered-notification {
   text-align: center;
 }
+
+.anvil-role-highlighted {
+  border: 2px solid #3da9fc;                
+  background-color: rgba(61, 169, 252, 0.1);    
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(61, 169, 252, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.modal-content {
+  background-color: rgba(255, 255, 255, 0.97) !important;
+  color: #111 !important;                                
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.modal-backdrop {
+  background-color: transparent !important;
+}
+.anvil-role-borderless-textarea textarea {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: transparent;  /* Optional: keep if you want a see-through look */
+}

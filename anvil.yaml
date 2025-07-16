@@ -58,6 +58,24 @@ db_schema:
     - admin_ui: {order: 0, width: 297}
       name: pid
       type: string
+    - admin_ui: {order: 1, width: 200}
+      name: gender
+      type: string
+    - admin_ui: {order: 2, width: 200}
+      name: age
+      type: string
+    - admin_ui: {order: 3, width: 200}
+      name: frequency
+      type: string
+    - admin_ui: {order: 4, width: 200}
+      name: exchange
+      type: string
+    - admin_ui: {order: 5, width: 200}
+      name: odds
+      type: string
+    - admin_ui: {order: 6, width: 200}
+      name: amount
+      type: string
     server: full
     title: demographics
   horse_positions:

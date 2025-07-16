@@ -11,7 +11,6 @@ class RaceCanvas(RaceCanvasTemplate):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
     
-    self.button_1.background = "#8adbdb"
 
     # Set canvas size and force visual centering
     self.canvas_1.width = 800

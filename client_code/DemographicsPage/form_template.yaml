@@ -1,12 +1,198 @@
 components:
 - components:
-  - layout_properties: {grid_position: 'VJDSOK,YTGUHR'}
-    name: radio_button_1
-    properties: {selected: false, text: radio_button_1}
-    type: RadioButton
+  - layout_properties: {grid_position: 'XEATJM,SIKVAM'}
+    name: headline_2
+    properties: {role: headline, text: Participant Survey, underline: true}
+    type: Label
+  - components:
+    - layout_properties: {}
+      name: label_1
+      properties: {align: left, text: '  What gender do you identify as?                                                                    '}
+      type: Label
+    - data_bindings: []
+      layout_properties: {}
+      name: gender_1
+      properties: {font_size: 14, text: Male, value: Male}
+      type: RadioButton
+    - layout_properties: {}
+      name: gender_2
+      properties: {font_size: 14, text: Female, value: Female}
+      type: RadioButton
+    - layout_properties: {}
+      name: gender_3
+      properties: {font_size: 14, text: Other, value: Other}
+      type: RadioButton
+    - layout_properties: {}
+      name: gender_4
+      properties: {font_size: 14, text: Prefer not to say, value: Prefer not to say}
+      type: RadioButton
+    layout_properties: {grid_position: 'QTBILB,EBTPQX'}
+    name: flow_panel_1
+    properties:
+      align: left
+      spacing:
+        margin: ['10', null, '10', null]
+    type: FlowPanel
+  - components:
+    - layout_properties: {}
+      name: label_2
+      properties: {align: left, text: '   How old are you?                                                                                              '}
+      type: Label
+    - layout_properties: {}
+      name: age_1
+      properties: {font_size: 14, text: <18, value: <18}
+      type: RadioButton
+    - layout_properties: {}
+      name: age_2
+      properties: {font_size: 14, text: 18-24, value: 18-24}
+      type: RadioButton
+    - layout_properties: {}
+      name: age_3
+      properties: {font_size: 14, text: 25-34, value: 25-34}
+      type: RadioButton
+    - layout_properties: {}
+      name: age_4
+      properties: {font_size: 14, text: 35-44, value: 35-44}
+      type: RadioButton
+    - layout_properties: {}
+      name: age_5
+      properties: {font_size: 14, text: 45-54, value: 45-54}
+      type: RadioButton
+    - layout_properties: {}
+      name: age_6
+      properties: {align: left, font_size: 14, text: 55+, value: 55+}
+      type: RadioButton
+    layout_properties: {grid_position: 'RYLDUC,NJYVNM'}
+    name: flow_panel_2
+    properties:
+      align: left
+      spacing:
+        margin: ['10', null, '10', null]
+    type: FlowPanel
+  - components:
+    - layout_properties: {}
+      name: label_3
+      properties: {align: right, text: '   How frequently do you bet on horse races?                                                '}
+      type: Label
+    - layout_properties: {}
+      name: freq_1
+      properties: {font_size: 14, text: Daily, value: Daily}
+      type: RadioButton
+    - layout_properties: {}
+      name: freq_2
+      properties: {font_size: 14, text: Weekly, value: Weekly}
+      type: RadioButton
+    - layout_properties: {}
+      name: freq_3
+      properties: {font_size: 14, text: Monthly, value: Monthly}
+      type: RadioButton
+    - layout_properties: {}
+      name: freq_4
+      properties: {font_size: 14, text: Once a year, value: Once a year}
+      type: RadioButton
+    - layout_properties: {}
+      name: freq_5
+      properties: {font_size: 14, text: Never, value: Never}
+      type: RadioButton
+    layout_properties: {grid_position: 'DMHRHS,CBANMO'}
+    name: flow_panel_3
+    properties:
+      spacing:
+        margin: ['10', null, '10', null]
+    type: FlowPanel
+  - components:
+    - layout_properties: {}
+      name: label_4
+      properties: {align: right, text: '   Have you ever used a betting exchange like Betfair or Smarkets?          '}
+      type: Label
+    - layout_properties: {}
+      name: exch_1
+      properties: {font_size: 14, text: 'Yes', value: 'Yes'}
+      type: RadioButton
+    - layout_properties: {}
+      name: exch_2
+      properties: {font_size: 14, text: 'No', value: 'No'}
+      type: RadioButton
+    - layout_properties: {}
+      name: exch_3
+      properties: {font_size: 14, text: Unsure, value: Unsure}
+      type: RadioButton
+    layout_properties: {grid_position: 'EBVWZG,HNRDYB'}
+    name: flow_panel_4
+    properties:
+      spacing:
+        margin: ['10', null, '10', null]
+    type: FlowPanel
+  - components:
+    - layout_properties: {}
+      name: label_5
+      properties: {align: right, text: '   How would you rate your understanding of betting odds?                       '}
+      type: Label
+    - layout_properties: {}
+      name: odds_1
+      properties: {font_size: 14, text: None, value: None}
+      type: RadioButton
+    - layout_properties: {}
+      name: odds_2
+      properties: {font_size: 14, text: Basic, value: Basic}
+      type: RadioButton
+    - layout_properties: {}
+      name: odds_3
+      properties: {font_size: 14, text: Moderate, value: Moderate}
+      type: RadioButton
+    - layout_properties: {}
+      name: odds_4
+      properties: {font_size: 14, text: Good, value: Good}
+      type: RadioButton
+    - layout_properties: {}
+      name: odds_5
+      properties: {font_size: 14, text: Expert, value: Expert}
+      type: RadioButton
+    layout_properties: {grid_position: 'OGNWIS,DCJOYL'}
+    name: flow_panel_5
+    properties:
+      spacing:
+        margin: ['10', null, '10', null]
+    type: FlowPanel
+  - components:
+    - layout_properties: {}
+      name: label_6
+      properties: {align: right, text: '   How much would you typically bet on a horse race?                                 '}
+      type: Label
+    - layout_properties: {}
+      name: amt_1
+      properties: {font_size: 14, text: £1-5, value: £1-5}
+      type: RadioButton
+    - layout_properties: {}
+      name: amt_2
+      properties: {font_size: 14, text: £6-10, value: £6-10}
+      type: RadioButton
+    - layout_properties: {}
+      name: amt_3
+      properties: {font_size: 14, text: £11-25, value: £11-25}
+      type: RadioButton
+    - layout_properties: {}
+      name: amt_4
+      properties: {font_size: 14, text: £26-50, value: '@26-30'}
+      type: RadioButton
+    - layout_properties: {}
+      name: amt_5
+      properties: {font_size: 14, text: £50+, value: £50+}
+      type: RadioButton
+    layout_properties: {grid_position: 'XYHBZI,BIQHLQ'}
+    name: flow_panel_6
+    properties:
+      spacing:
+        margin: ['10', null, '10', null]
+    type: FlowPanel
+  - event_bindings: {click: start_sim_click}
+    layout_properties: {grid_position: 'USUZOC,HHACCT'}
+    name: start_sim
+    properties: {align: center, text: Start Simulation}
+    type: Button
   layout_properties: {slot: default}
   name: content_panel
-  properties: {}
+  properties: {col_widths: '{}'}
   type: ColumnPanel
 - layout_properties: {slot: nav-right}
   name: navbar_links

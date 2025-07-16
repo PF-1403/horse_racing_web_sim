@@ -5,6 +5,7 @@ import anvil.tables.query as q
 from anvil.tables import app_tables
 from datetime import datetime
 import anvil.server
+import anvil.js
 import random
 import copy
 
@@ -18,6 +19,7 @@ class HomePage(HomePageTemplate):
     # Any code you write here will run before the form opens.
     self.place_bet_1.set_event_handler("x-place-bet", self.handle_place_bet)
     self.race_canvas_1.set_event_handler("x-start-race", self.start_race)
+    anvil.js.window.setTimeout(self.walkthrough, 100)
 
   def initialise_app(self):
     self.balance = 1000.0
@@ -28,7 +30,6 @@ class HomePage(HomePageTemplate):
     self.bets_closed = False
     self.backed_horse = None
     self.race_ids = ["race1", "race2", "race3", "race4", "race5"]
-    #self.race_ids = ["race5"]
     fixed = self.race_ids[0]
     shuffle = self.race_ids[1:]
     random.shuffle(shuffle)
@@ -122,6 +123,7 @@ class HomePage(HomePageTemplate):
     self.finish_line = event_args['finish_line']
     self.race_started = True 
     self.race_timer.enabled = True
+    self.bets_closed = False
     self.race_log = {}
     self.favourite = self.race_spec['favourite_id']
     self.second = self.race_spec['second_id']
@@ -229,7 +231,6 @@ class HomePage(HomePageTemplate):
           Notification("No More Bets!", style="danger", timeout=0.75).show()
           self.place_bet_1.bet_button.enabled = False
           break
-
   
     # Check for race winner
     if self.race_winner is None:
@@ -277,6 +278,7 @@ class HomePage(HomePageTemplate):
       self.display_results_end(lost_stake, total_winnings, stake_returned)
     else:
       self.display_results_next_race(lost_stake, total_winnings, stake_returned)
+
     
   def display_results_next_race(self, stake, winnings, stake_returned):
     next_race = alert(
@@ -294,6 +296,9 @@ class HomePage(HomePageTemplate):
     )
   
     if next_race:
+      if self.race_index == 1:
+        self.balance = 1000
+        Notification("Balance reset! Starting simulation.", style="info").show()
       self.race_winner = None
       self.race_canvas_1.reset_canvas()
       self.load_next_race()
@@ -314,6 +319,7 @@ class HomePage(HomePageTemplate):
     )
 
     if end_page:
+      anvil.server.call('clear_bets_table')
       open_form('EndForm')
 
   def log_results(self):
@@ -323,4 +329,41 @@ class HomePage(HomePageTemplate):
   def race_complete(self):
     self.log_results()
     self.calc_and_disp_results()
+    
+  def walkthrough(self):
+    self.balance_bar_1.role = "highlighted"
+    alert("      This is the Balance Bar.\n\n"
+          "It displays your total balance and race progress.", 
+          title="Walkthrough")
+    self.balance_bar_1.role = None
+    
+    self.odds_table_1.role = "highlighted"
+    alert("  This is the Odds Table. \n\n"
+          "The odds for each horse are shown here, alongside the total amount" 
+          " staked and potential winnings for each horse in the race.\n\n"
+          "Odds are decimal, with lower odds meaning a higher likelihood of winning.", 
+          title="Walkthrough")
+    self.odds_table_1.role = None
+
+    self.place_bet_1.role = "highlighted"
+    alert("  This is the Place Bets Widget. \n\n"
+          "Enter the ID (1-4) of the horse you want to bet on and the stake amount. \n\n" 
+          "A pre-race bet must be placed for each race, and you can bet freely in-race\n\n"
+          "You can press the 'Place Bet' button or the enter key once information has been entered.", 
+          title="Walkthrough")
+    self.place_bet_1.role = None
+
+    self.race_canvas_1.role = "highlighted"
+    alert("      This is the Race Canvas. \n"
+          "This displays the progress of each horse in the race. \n\n" 
+          "Bets can't be placed past the dashed line showing 80% race distance.\n\n"
+          "Once you have placed your pre-race bet, click 'Start Race' to begin.", 
+          title="Walkthrough")
+    self.race_canvas_1.role = None
+
+    alert("You will now begin the simulation. \n\n"
+          "Race 1 is a practice to familiarise you with the simulator. \n\n" 
+          "Races 2-5 will show different race scenarios.\n\n"
+          "Please complete all simulated races.", 
+          title="Walkthrough")
     
