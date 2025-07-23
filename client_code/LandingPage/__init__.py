@@ -10,7 +10,6 @@ class LandingPage(LandingPageTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-    self.participant_id = anvil.server.call('get_or_make_id')
     self.label_2.align = "center"
     self.label_2.text = ("My name is Peter Fox, and I am an MSc Data Science student at the "
                         "University of Bristol.\n" 
