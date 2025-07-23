@@ -20,7 +20,7 @@ class LandingPage(LandingPageTemplate):
                         "The simulation comprises of a short survey, followed by 5 mock horse races which you place bets on\n"
                         "before and during the races.\n"
                         "Results for both the survey and simulation do not store any identifying information, and your resonses will\n"
-                        "be aggregated across all respondents.\n"
+                        "be aggregated across all respondents.\n\n"
                         "The simulation falls under the University of Bristol Ethics Application 15208.\n\n"
                         "Please press the 'Begin Experiment' button below to continue."
                         )

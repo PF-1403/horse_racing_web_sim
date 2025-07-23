@@ -9,7 +9,7 @@ class DemographicsPage(DemographicsPageTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-
+    self.participant_id = anvil.server.call('get_or_make_id')
     # Any code you write here will run before the form opens.
     self.age_1.group_name = "age"
     self.age_2.group_name = "age"
@@ -53,7 +53,7 @@ class DemographicsPage(DemographicsPageTemplate):
         return
 
     with anvil.server.no_loading_indicator:
-      anvil.server.call('store_demographics', vals)
+      anvil.server.call('store_demographics', vals, self.participant_id)
     open_form('HomePage')
 
   def get_all_values(self):

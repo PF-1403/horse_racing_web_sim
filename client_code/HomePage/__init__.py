@@ -49,6 +49,7 @@ class HomePage(HomePageTemplate):
     self.place_bet_1.bet_button.enabled = True
     self.odds_table_1.populate_static_odds(self.race_spec['competitors'])
     self.balance_bar_1.update_info(balance=self.balance, race_number=self.race_index+1, total_races=len(self.race_ids))
+    self.prev_balance = self.balance
 
   def update_balance_bar(self):
     self.balance_bar_1.update_info(balance=self.balance, race_number=self.race_index + 1, total_races=len(self.race_ids))
@@ -115,6 +116,7 @@ class HomePage(HomePageTemplate):
 
   def start_race(self, **event_args):
     # Establish initial horse location, show race started
+    self.place_bet_1.competitor_text.focus()
     bet_placed = self.check_pre_bet()
     if not bet_placed:
       self.race_canvas_1.button_1.enabled = True
@@ -275,47 +277,47 @@ class HomePage(HomePageTemplate):
 
     self.race_index += 1
     if self.race_index == len(self.race_ids):
-      self.display_results_end(lost_stake, total_winnings, stake_returned)
+      self.display_results_end(lost_stake, total_winnings, stake_returned, self.prev_balance)
     else:
-      self.display_results_next_race(lost_stake, total_winnings, stake_returned)
+      self.display_results_next_race(lost_stake, total_winnings, stake_returned, self.prev_balance)
 
     
-  def display_results_next_race(self, stake, winnings, stake_returned):
+  def display_results_next_race(self, stake, winnings, stake_returned, prev_balance):
     next_race = alert(
       title=f'Race Complete - Horse {self.race_winner} Won!',
       content=(
-        f"Stakes lost on losers:                     £{stake:.2f}\n"
-        f"Amount won on winners:               £{winnings:.2f}\n"
-        f"Stakes returned:                              £{stake_returned:.2f}\n"
+        f"Balance Before Race:                                            £{prev_balance:.2f}\n"
+        f"New balance:                                                          £{self.balance:.2f}\n"
         f"\n"
-        f"New balance:                                   £{self.balance:.2f}"
+        f"Stake lost on non-winning bets:                            £{stake:.2f}\n"
+        f"Total returned on winners (stake + winnings):    £{stake_returned + winnings:.2f}"
       ),
       buttons=[("Next Race", True)],
       dismissible=False,
-      large=True
+      large=False
     )
   
     if next_race:
       if self.race_index == 1:
         self.balance = 1000
-        Notification("Balance reset! Starting simulation.", style="info").show()
+        Notification("Practice Race Complete - Balance Reset! \nStarting simulation.", style="info", timeout=1.5).show()
       self.race_winner = None
       self.race_canvas_1.reset_canvas()
       self.load_next_race()
       
-  def display_results_end(self, stake, winnings, stake_returned):
+  def display_results_end(self, stake, winnings, stake_returned, prev_balance):
     end_page = alert(
       title=f'Final Race Complete - Horse {self.race_winner} Won! \nThanks For Participating!',
       content=(
-        f"Stakes lost on losers:                     £{stake:.2f}\n"
-        f"Amount won on winners:               £{winnings:.2f}\n"
-        f"Stakes returned:                              £{stake_returned:.2f}\n"
+        f"Balance Before Race:                                            £{prev_balance:.2f}\n"
+        f"New balance:                                                          £{self.balance:.2f}\n"
         f"\n"
-        f"New balance:                                   £{self.balance:.2f}"
+        f"Stake lost on non-winning bets:                            £{stake:.2f}\n"
+        f"Total returned on winners (stake + winnings):    £{stake_returned + winnings:.2f}"
       ),
       buttons=[("Complete", True)],
       dismissible=False,
-      large=True
+      large=False
     )
 
     if end_page:
@@ -324,7 +326,7 @@ class HomePage(HomePageTemplate):
 
   def log_results(self):
     with anvil.server.no_loading_indicator:
-      anvil.server.call('launch_background_tasks', self.race_log, self.race_spec['config_id'])
+      anvil.server.call('launch_background_tasks', self.race_log, self.race_spec['config_id'], self.participant_id)
 
   def race_complete(self):
     self.log_results()
@@ -332,33 +334,34 @@ class HomePage(HomePageTemplate):
     
   def walkthrough(self):
     self.balance_bar_1.role = "highlighted"
-    alert("      This is the Balance Bar.\n\n"
+    alert("This is the Balance Bar.\n\n"
           "It displays your total balance and race progress.", 
-          title="Walkthrough")
+          title="Walkthrough", large=True)
     self.balance_bar_1.role = None
     
     self.odds_table_1.role = "highlighted"
-    alert("  This is the Odds Table. \n\n"
+    alert("This is the Odds Table. \n\n"
           "The odds for each horse are shown here, alongside the total amount" 
           " staked and potential winnings for each horse in the race.\n\n"
-          "Odds are decimal, with lower odds meaning a higher likelihood of winning.", 
-          title="Walkthrough")
+          "Odds are decimal, with lower odds meaning a higher likelihood of winning.\n\n"
+          "The total amount staked on each horse, and your potential winnings will populate here after you start betting.", 
+          title="Walkthrough", large=True)
     self.odds_table_1.role = None
 
     self.place_bet_1.role = "highlighted"
-    alert("  This is the Place Bets Widget. \n\n"
+    alert("This is the Place Bets Widget. \n\n"
           "Enter the ID (1-4) of the horse you want to bet on and the stake amount. \n\n" 
           "A pre-race bet must be placed for each race, and you can bet freely in-race\n\n"
           "You can press the 'Place Bet' button or the enter key once information has been entered.", 
-          title="Walkthrough")
+          title="Walkthrough", large=True)
     self.place_bet_1.role = None
 
     self.race_canvas_1.role = "highlighted"
-    alert("      This is the Race Canvas. \n"
+    alert("This is the Race Canvas. \n"
           "This displays the progress of each horse in the race. \n\n" 
           "Bets can't be placed past the dashed line showing 80% race distance.\n\n"
           "Once you have placed your pre-race bet, click 'Start Race' to begin.", 
-          title="Walkthrough")
+          title="Walkthrough", large=True)
     self.race_canvas_1.role = None
 
     alert("You will now begin the simulation. \n\n"

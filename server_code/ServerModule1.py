@@ -231,12 +231,12 @@ def transfer_bets():
     )
 
 @anvil.server.background_task
-def update_log_table(race_log, race_id):
+def update_log_table(race_log, race_id, pid):
   for time, horse_info in race_log.items():
       pos_dict = {horse['id']:horse['x'] for horse in horse_info}
       app_tables.horse_positions.add_row(
         timestamp=float(time),
-        pid=get_or_make_id(),
+        pid=pid,
         race_spec=race_id,
         pos_1=pos_dict[1],
         pos_2=pos_dict[2],
@@ -245,13 +245,13 @@ def update_log_table(race_log, race_id):
       )
 
 @anvil.server.callable
-def launch_background_tasks(race_log, race_id):
+def launch_background_tasks(race_log, race_id, pid):
   anvil.server.launch_background_task('transfer_bets')
-  anvil.server.launch_background_task('update_log_table', race_log, race_id)
+  anvil.server.launch_background_task('update_log_table', race_log, race_id, pid)
 
 @anvil.server.background_task
-def demographics(vals):
-  pid = get_or_make_id()
+def demographics(vals, pid):
+  pid = pid
   row = app_tables.demographics.get(pid=pid)
   if row:
     row['gender'] = vals[0]
@@ -265,5 +265,5 @@ def demographics(vals):
     print("User not found")
 
 @anvil.server.callable
-def store_demographics(values):
-  anvil.server.launch_background_task('demographics', values)
+def store_demographics(values, pid):
+  anvil.server.launch_background_task('demographics', values, pid)
