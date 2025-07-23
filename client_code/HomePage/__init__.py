@@ -60,6 +60,7 @@ class HomePage(HomePageTemplate):
   
   def calculate_dynamic_odds(self, competitors, positions):
     leader_position = max(horse['x'] for horse in positions)
+    last_position = max(horse['x'] for horse in positions)
     leader_progress = float(leader_position) / float(self.finish_line)
     odds = {}
 
@@ -71,11 +72,13 @@ class HomePage(HomePageTemplate):
 
       # Do adaptions based upon closeness
       if leader_position - current_position == 0:
-        win_probability = 1
+        win_probability = 1 - random.uniform(0, 0.2)
       elif abs(leader_position - current_position) <= 0.1:
-        win_probability = 0.5 * relative_progress
+        win_probability = random.uniform(0.8, 1) * relative_progress
+      elif current_position == last_position:
+        win_probability = random.uniform(0.01, 0.1) * relative_progress
       else:
-        win_probability = 0.3 * relative_progress
+        win_probability = random.uniform(0.2, 0.4) * relative_progress
 
       # Calculate final odds
       dynamic_odds = max(1.01, (1 / win_probability))
@@ -290,7 +293,7 @@ class HomePage(HomePageTemplate):
         f"New balance:                                                          £{self.balance:.2f}\n"
         f"\n"
         f"Stake lost on non-winning bets:                            £{stake:.2f}\n"
-        f"Total returned on winners (stake + winnings):    £{stake_returned + winnings:.2f}"
+        f"Total won on winners :                                            £{winnings:.2f}"
       ),
       buttons=[("Next Race", True)],
       dismissible=False,
@@ -313,7 +316,7 @@ class HomePage(HomePageTemplate):
         f"New balance:                                                          £{self.balance:.2f}\n"
         f"\n"
         f"Stake lost on non-winning bets:                            £{stake:.2f}\n"
-        f"Total returned on winners (stake + winnings):    £{stake_returned + winnings:.2f}"
+        f"Total won on winners :                                            £{winnings:.2f}"
       ),
       buttons=[("Complete", True)],
       dismissible=False,
@@ -344,7 +347,8 @@ class HomePage(HomePageTemplate):
           "The odds for each horse are shown here, alongside the total amount" 
           " staked and potential winnings for each horse in the race.\n\n"
           "Odds are decimal, with lower odds meaning a higher likelihood of winning.\n\n"
-          "The total amount staked on each horse, and your potential winnings will populate here after you start betting.", 
+          "The total amount staked on each horse, and your potential winnings will populate here after you start betting.\n"
+          "If you win a bet, the stake is returned, along with your winnings.", 
           title="Walkthrough", large=True)
     self.odds_table_1.role = None
 
@@ -357,7 +361,7 @@ class HomePage(HomePageTemplate):
     self.place_bet_1.role = None
 
     self.race_canvas_1.role = "highlighted"
-    alert("This is the Race Canvas. \n"
+    alert("This is the Race Canvas. \n\n"
           "This displays the progress of each horse in the race. \n\n" 
           "Bets can't be placed past the dashed line showing 80% race distance.\n\n"
           "Once you have placed your pre-race bet, click 'Start Race' to begin.", 

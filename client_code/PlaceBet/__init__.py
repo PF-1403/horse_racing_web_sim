@@ -23,6 +23,10 @@ class PlaceBet(PlaceBetTemplate):
     comp_id = self.competitor_text.text
     bet_amt = self.bet_text.text
 
+    # Stop pressing enter allowing bets to be placed
+    if not self.bet_button.enabled:
+      return
+    
     if not comp_id and bet_amt:
       Notification("Please enter a value for all fields.", style="warning").show()
       return

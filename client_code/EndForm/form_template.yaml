@@ -28,7 +28,7 @@ components:
       type: Label
     - layout_properties: {}
       name: link_1
-      properties: {align: center, text: 'https://github.com/PF-1403/horse_racing_web_sim'}
+      properties: {align: center, text: 'https://github.com/PF-1403/horse_racing_web_sim', url: 'https://github.com/PF-1403/horse_racing_web_sim'}
       type: Link
     layout_properties: {grid_position: 'HXNVCG,ZVITQV'}
     name: flow_panel_1
@@ -44,7 +44,7 @@ components:
       type: Label
     - layout_properties: {}
       name: link_1_copy
-      properties: {align: center, text: 'https://github.com/PF-1403/BBE_Agents'}
+      properties: {align: center, text: 'https://github.com/PF-1403/BBE_Agents', url: 'https://github.com/PF-1403/BBE_Agents'}
       type: Link
     layout_properties: {grid_position: 'YMPHXB,KUFQOZ'}
     name: flow_panel_4
@@ -60,7 +60,7 @@ components:
       type: Label
     - layout_properties: {}
       name: link_1_copy_copy
-      properties: {align: center, text: 'https://doi.org/10.48550/arXiv.2108.02419'}
+      properties: {align: center, text: 'https://doi.org/10.48550/arXiv.2108.02419', url: 'https://doi.org/10.48550/arXiv.2108.02419'}
       type: Link
     layout_properties: {grid_position: 'OSNSWK,OGEYDM'}
     name: flow_panel_5
